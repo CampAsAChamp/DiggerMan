@@ -2,6 +2,7 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
+#include "GameWorld.h"
 
 const int DM_POS_X = 30;
 const int DM_POS_Y = 60;
@@ -10,11 +11,12 @@ const int DM_POS_Y = 60;
 
 //GraphObject(int imageID, int startX, int startY, DIRECTION startDirection, float size = 1.0, unsigned int depth = 0);
 
-class Actor: public GraphObject
+class Actor : public GraphObject
 {
 public:
     Actor(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
-    : GraphObject(imageID, startX, startY, right, size, depth) {}
+    : GraphObject(imageID, startX, startY, right, size, depth)
+    {}
     
     inline void setHitpoints(int newHitpoints)
     {
@@ -29,12 +31,7 @@ private:
     int m_hitpoints;
 };
 
-class FixedActor : public Actor
-{
-    
-};
-
-class DiggerMan: public Actor
+class DiggerMan : public Actor
 {
 public:
     DiggerMan()
@@ -42,45 +39,15 @@ public:
     {
         setVisible(true);
     }
+    
+    void doSomething(const int value);
+    
 private:
     int m_water;
     int m_sonarCharges;
     int m_goldNuggets;
     
-};
-
-class Protestor : public Actor
-{
     
-};
-
-class HardcoreProtestor : public Actor
-{
-    
-};
-
-class OilBarrel : public FixedActor
-{
-    
-};
-
-class Boulder : public FixedActor
-{
-    
-};
-
-class GoldNugget : public FixedActor
-{
-    
-};
-
-class SonarKit : public FixedActor
-{
-    
-};
-
-class WaterPickup : public FixedActor
-{
     
 };
 
@@ -92,8 +59,11 @@ public:
     {
         setVisible(true);
     }
+    
+private:
+    
 };
 
-// Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
+
 
 #endif // ACTOR_H_
