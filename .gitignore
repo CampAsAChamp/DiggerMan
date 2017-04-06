@@ -10,6 +10,7 @@ DiggerMan/freeglut_ext.h
 DiggerMan/freeglut_std.h
 DiggerMan/GameConstants.h
 DiggerMan/GameController.*
+DiggerMan/GameWorld.*
 DiggerMan/GraphObject.h
 DiggerMan/irrKlang.lib
 DiggerMan/main.cpp
