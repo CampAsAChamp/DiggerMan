@@ -6,6 +6,7 @@
 #include "Actor.h"
 #include <string>
 
+//This is Nick's branch
 const int MAXSIZE_X = 60;
 const int MAXSIZE_Y = 60;
 
