@@ -52,8 +52,13 @@ public:
         int left = KEY_PRESS_LEFT;
         int right = KEY_PRESS_RIGHT;
         
-        int numValue;
+        int numValue = 0;
+        bool outOfBounds = false;
         
+        if ((diggerman[0][0]->getX() + 1) > 60)
+        {
+            outOfBounds = true;
+        }
         
         if (getKey(numValue))
         {
@@ -65,7 +70,7 @@ public:
             {
                 diggerman[0][0]->doSomething(KEY_PRESS_DOWN);
             }
-            else if (numValue == right)
+            else if (numValue == right && outOfBounds == false)
             {
                 diggerman[0][0]->doSomething(KEY_PRESS_RIGHT);
             }
@@ -73,6 +78,7 @@ public:
             {
                 diggerman[0][0]->doSomething(KEY_PRESS_LEFT);
             }
+  
         }
   
         return GWSTATUS_CONTINUE_GAME;
