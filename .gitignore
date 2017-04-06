@@ -16,10 +16,14 @@ DiggerMan/irrKlang.lib
 DiggerMan/main.cpp
 DiggerMan/SoundFX.h
 DiggerMan/SpriteManager.h
-
+DerivedData/*
 Debug/*
 Diggerman.opensdf
 DiggerMan.sdf
 DiggerMan.sln
 .DS_Store
 .vs/*
+
+DiggerMan.xcodeproj
+
+
