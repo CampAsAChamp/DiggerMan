@@ -6,6 +6,13 @@
 #include "Actor.h"
 #include <string>
 
+const int MAXSIZE_X = 60;
+const int MAXSIZE_Y = 60;
+
+const int MINESHAFT_START_LEFT = 29;
+const int MINESHAFT_STOP_RIGHT = 34;
+const int MINESHAFT_BOTTOM = 9;
+
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
 class StudentWorld : public GameWorld
@@ -18,25 +25,24 @@ public:
     
     virtual int init()
     {
-        for (int i = 0; i < 60; i++) //VERTICAL AXIS
+		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
         {
-            for (int j = 0; j < 65; j++) //HORIZONTAL AXIS
+			for (int j = 0; j < (MAXSIZE_Y +5); j++) //HORIZONTAL AXIS (Y-Axis)
             {
-                if (i < 9)
+                if (i < MINESHAFT_BOTTOM) //If below the mineshaft
                 {
-                    dirt[i][j] = new Dirt(j, i);
+                    dirt[i][j] = new Dirt(j, i); //Add dirt to below the mineshaft
                 }
                 else
                 {
-                    if (j <= 29 || j >= 34)
+                    if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
                     {
-            
-    
                         dirt[i][j] = new Dirt(j, i);
                     }
                 }
             }
         }
+
         diggerman[0][0] = new DiggerMan();
         
         return GWSTATUS_CONTINUE_GAME;
@@ -55,7 +61,7 @@ public:
         int numValue = 0;
         bool outOfBounds = false;
         
-        if ((diggerman[0][0]->getX() + 1) > 60)
+		if ((diggerman[0][0]->getX() + 1) > MAXSIZE_X)
         {
             outOfBounds = true;
         }
@@ -90,9 +96,9 @@ public:
     
 private:
     
-    Actor* m_actor[60][60];
-    DiggerMan* diggerman[60][60];
-    Dirt* dirt[60][60];
+	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
+	DiggerMan* diggerman[MAXSIZE_X][MAXSIZE_Y];
+	Dirt* dirt[MAXSIZE_X][MAXSIZE_Y];
     
 };
 
