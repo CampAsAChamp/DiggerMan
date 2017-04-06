@@ -3,3 +3,5 @@ Debug/*
 Diggerman.opensdf
 DiggerMan.sdf
 DiggerMan.sln
+.DS_Store
+.vs/*
