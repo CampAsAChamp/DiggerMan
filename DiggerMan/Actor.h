@@ -4,8 +4,8 @@
 #include "GraphObject.h"
 #include "GameWorld.h"
 
-const int DM_POS_X = 30;
-const int DM_POS_Y = 60;
+const int DM_START_X = 30;
+const int DM_START_Y = 60;
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 
@@ -26,6 +26,7 @@ public:
     {
         return m_hitpoints;
     }
+
     
 private:
     int m_hitpoints;
@@ -35,20 +36,17 @@ class DiggerMan : public Actor
 {
 public:
     DiggerMan()
-    : Actor(IMID_PLAYER, 30, 60)
+    : Actor(IMID_PLAYER, DM_START_X, DM_START_Y)
     {
         setVisible(true);
     }
     
-    void doSomething(const int value);
+    virtual void doSomething(const int value);
     
 private:
     int m_water;
     int m_sonarCharges;
     int m_goldNuggets;
-    
-    
-    
 };
 
 class Dirt : public Actor
@@ -64,6 +62,26 @@ private:
     
 };
 
+class Boulder : public Actor
+{
+	//Must start in a stable state, must add code later
+public:
+	Boulder(int startX, int startY)
+		:Actor(IMID_BOULDER, startX, startY, down, 1.0, 1)
+	{
+		setVisible(true);
+	}
 
+	void doSomething();
+	bool isStable();
+
+private:
+};
+
+class Protester : public Actor
+{};
+
+class HardcoreProtestor : public Protester
+{};
 
 #endif // ACTOR_H_

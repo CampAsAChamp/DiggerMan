@@ -50,8 +50,17 @@ void DiggerMan::doSomething(int value)
         outOfBounds = true;
         moveTo(getX(), getY() - 1);
     }
-    
-    
+}
 
-    
+void Boulder::doSomething()
+{
+	//TODO: Check if still alive and immediately return
+	
+}
+
+bool Boulder::isStable()
+{
+	//TODO: Check if 4 dirt below
+	//GraphObject G1 = getGraphObjects(getY());
+	return true;
 }
