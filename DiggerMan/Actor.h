@@ -49,6 +49,9 @@ private:
     int m_goldNuggets;
 };
 
+class Squirt : public Actor
+{};
+
 class Dirt : public Actor
 {
 public:
@@ -60,6 +63,26 @@ public:
     
 private:
     
+};
+
+class Barrel : public Actor
+{
+public:
+	Barrel(int startX, int startY)
+		: Actor(IMID_BARREL, startX, startY, right, 1.0, 2)
+	{
+		setVisible(false); //Barrels should start hidden and only be discovered when walked over
+	}
+};
+
+class GoldNugget : public Actor
+{
+public:
+	GoldNugget(int startX, int startY)
+		: Actor(IMID_GOLD, startX, startY, right, 1.0, 2)
+	{
+		setVisible(true);
+	}
 };
 
 class Boulder : public Actor
