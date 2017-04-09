@@ -31,19 +31,19 @@ public:
             {
                 if (i < MINESHAFT_BOTTOM) //If below the mineshaft
                 {
-                    dirt[i][j] = new Dirt(j, i); //Add dirt to below the mineshaft
+                    m_actor[i][j] = new Dirt(j, i); //Add dirt to below the mineshaft
                 }
                 else
                 {
                     if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
                     {
-                        dirt[i][j] = new Dirt(j, i);
+                        m_actor[i][j] = new Dirt(j, i);
                     }
                 }
             }
         }
 
-        diggerman[0][0] = new DiggerMan();
+        m_diggerman = new DiggerMan();
         
         return GWSTATUS_CONTINUE_GAME;
     }
@@ -61,7 +61,7 @@ public:
         int numValue = 0;
         bool outOfBounds = false;
         
-		if ((diggerman[0][0]->getX() + 1) > MAXSIZE_X)
+		if ((m_diggerman->getX() + 1) > MAXSIZE_X)
         {
             outOfBounds = true;
         }
@@ -70,23 +70,21 @@ public:
         {
             if (numValue == up)
             {
-                diggerman[0][0]->doSomething(KEY_PRESS_UP);
+                m_diggerman->doSomething(KEY_PRESS_UP);
             }
             else if (numValue == down)
             {
-                diggerman[0][0]->doSomething(KEY_PRESS_DOWN);
+                m_diggerman->doSomething(KEY_PRESS_DOWN);
             }
             else if (numValue == right && outOfBounds == false)
             {
-                diggerman[0][0]->doSomething(KEY_PRESS_RIGHT);
+                m_diggerman->doSomething(KEY_PRESS_RIGHT);
             }
             else if (numValue == left)
             {
-                diggerman[0][0]->doSomething(KEY_PRESS_LEFT);
+                m_diggerman->doSomething(KEY_PRESS_LEFT);
             }
-  
         }
-  
         return GWSTATUS_CONTINUE_GAME;
     }
     
@@ -94,11 +92,8 @@ public:
     {}
     
 private:
-    
 	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
-	DiggerMan* diggerman[MAXSIZE_X][MAXSIZE_Y];
-	Dirt* dirt[MAXSIZE_X][MAXSIZE_Y];
-    
+	DiggerMan* m_diggerman;
 };
 
 #endif // STUDENTWORLD_H_
