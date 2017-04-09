@@ -43,8 +43,7 @@ public:
             }
         }
 		m_actor[20][20] = new Boulder(20, 20); //Testing to see if I can spawn a boulder
-		m_actor[30][30] = new Barrel(30, 30); //Testing to see if I can spawn a barrel
-		m_actor[40][40] = new GoldNugget(40, 40);
+	
 		m_diggerman = new DiggerMan();
         
         return GWSTATUS_CONTINUE_GAME;
@@ -96,7 +95,6 @@ public:
 private:
 	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
 	DiggerMan* m_diggerman;
-
 };
 
 #endif // STUDENTWORLD_H_
