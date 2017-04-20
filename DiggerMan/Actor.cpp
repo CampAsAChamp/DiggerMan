@@ -62,5 +62,8 @@ bool Boulder::isStable()
 {
 	//TODO: Check if 4 dirt below
 	//GraphObject G1 = getGraphObjects(getY());
+	//GraphObject temp = getGraphObjects(getY());
+
+
 	return true;
 }

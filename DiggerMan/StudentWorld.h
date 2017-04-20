@@ -31,13 +31,13 @@ public:
             {
                 if (i < MINESHAFT_BOTTOM) //If below the mineshaft
                 {
-                    m_actor[i][j] = new Dirt(j, i); //Add dirt to below the mineshaft
+                    m_dirt[i][j] = new Dirt(j, i); //Add dirt to below the mineshaft
                 }
                 else
                 {
                     if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
                     {
-                        m_actor[i][j] = new Dirt(j, i);
+                        m_dirt[i][j] = new Dirt(j, i);
                     }
                 }
             }
@@ -94,6 +94,7 @@ public:
     
 private:
 	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
+	Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
 	DiggerMan* m_diggerman;
 };
 
