@@ -8,11 +8,11 @@
 
 //This is Nick's branch
 const int MAXSIZE_X = 60;
-const int MAXSIZE_Y = 60;
+const int MAXSIZE_Y = 64;
 
 const int MINESHAFT_START_LEFT = 29;
 const int MINESHAFT_STOP_RIGHT = 34;
-const int MINESHAFT_BOTTOM = 9;
+const int MINESHAFT_BOTTOM = 16;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
@@ -27,7 +27,7 @@ public:
     {
 		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
         {
-			for (int j = 0; j < (MAXSIZE_Y +5); j++) //HORIZONTAL AXIS (Y-Axis)
+			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
             {
                 if (i < MINESHAFT_BOTTOM) //If below the mineshaft
                 {

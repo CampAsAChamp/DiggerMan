@@ -30,22 +30,22 @@ void DiggerMan::doSomething(int value)
     //////////BOUNDARIES HANDLER//////////
     bool outOfBounds = false;
     
-    if ((getX() + 1) > 60)
+    if ((getX() + 1) > MAXSIZE_X + 1)
     {
         outOfBounds = true;
         moveTo(getX() - 1, getY());
     }
-    else if ((getX() - 1) < 0)
+    else if ((getX() - 1) < -1)
     {
         outOfBounds = true;
         moveTo(getX() + 1, getY());
     }
-    else if ((getY() - 1) < 0)
+    else if ((getY() - 1) < -1)
     {
         outOfBounds = true;
         moveTo(getX(), getY() + 1);
     }
-    else if ((getY() + 1) > 61)
+    else if ((getY() + 1) > MAXSIZE_Y + 1)
     {
         outOfBounds = true;
         moveTo(getX(), getY() - 1);
