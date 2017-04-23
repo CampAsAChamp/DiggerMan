@@ -60,13 +60,7 @@ public:
         int right = KEY_PRESS_RIGHT;
         
         int numValue = 0;
-        bool outOfBounds = false;
-        
-		if ((m_diggerman->getX() + 1) > MAXSIZE_X)
-        {
-            outOfBounds = true;
-        }
-        
+      
         if (getKey(numValue))
         {
             if (numValue == up)
@@ -77,7 +71,7 @@ public:
             {
                 m_diggerman->doSomething(KEY_PRESS_DOWN);
             }
-            else if (numValue == right && outOfBounds == false)
+            else if (numValue == right)
             {
                 m_diggerman->doSomething(KEY_PRESS_RIGHT);
             }
