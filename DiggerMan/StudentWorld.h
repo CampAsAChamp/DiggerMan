@@ -5,6 +5,9 @@
 #include "GameConstants.h"
 #include "Actor.h"
 #include <string>
+#include <iostream>
+
+using namespace std;
 
 //This is Nick's branch
 const int MAXSIZE_X = 60;
@@ -22,6 +25,14 @@ public:
     StudentWorld(std::string assetDir)
     : GameWorld(assetDir)
     {}
+
+	void setGameText()
+	{
+		string text;
+		text = "Edit this stuff later";
+
+		GameWorld::setGameStatText(text);
+	}
     
     virtual int init()
     {
@@ -31,20 +42,20 @@ public:
             {
                 if (i < MINESHAFT_BOTTOM) //If below the mineshaft
                 {
-                    m_dirt[i][j] = new Dirt(j, i); //Add dirt to below the mineshaft
+                    m_dirt[i][j] = new Dirt(this, j, i); //Add dirt to below the mineshaft
                 }
                 else
                 {
                     if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
                     {
-                        m_dirt[i][j] = new Dirt(j, i);
+						m_dirt[i][j] = new Dirt(this, j, i);
                     }
                 }
             }
         }
-		m_actor[20][20] = new Boulder(20, 20); //Testing to see if I can spawn a boulder
+		m_actor[20][20] = new Boulder(this, 20, 20); //Testing to see if I can spawn a boulder
 	
-		m_diggerman = new DiggerMan();
+		m_diggerman = new DiggerMan(this);
         
         return GWSTATUS_CONTINUE_GAME;
     }
@@ -54,6 +65,9 @@ public:
         // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
         // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
         
+		StudentWorld::setGameText();
+
+
         int up = KEY_PRESS_UP;
         int down = KEY_PRESS_DOWN;
         int left = KEY_PRESS_LEFT;
