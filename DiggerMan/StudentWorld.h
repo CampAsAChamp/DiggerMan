@@ -50,6 +50,12 @@ public:
                     {
 						m_dirt[i][j] = new Dirt(this, j, i);
                     }
+					else
+					{ 
+						m_dirt[i][j] = new Dirt(this, j, i);
+						m_dirt[i][j]->setVisible(false);
+					}
+				
                 }
             }
         }
@@ -66,13 +72,17 @@ public:
         {
             for (int y = yPassed; y < yPassed + 4; y++)
             {
-                if (m_dirt[y][x] != nullptr)
-                {
-                    if ((x < MAXSIZE_Y) && (y < MAXSIZE_X) && m_dirt[y][x]->isVisible())
-                    {
-                        m_dirt[y][x]->setVisible(false);
-                    }
-                }
+				if (m_dirt[y][x] != nullptr)
+				{
+					if ((x < MAXSIZE_Y) && (y < MAXSIZE_X))
+					{
+						m_dirt[y][x]->setVisible(false);
+					}
+				}
+				else
+				{
+					return;
+				}
             }
         }
     }

@@ -19,8 +19,8 @@ public:
 	Actor(StudentWorld * world, int imageID, int startX, int startY, Direction dir = right, double size = 1.0, unsigned int depth = 0)
 	:GraphObject(imageID, startX, startY, right, size, depth)
 	{
-        m_world = world;
-    }
+		m_world = world;
+	}
 
 	inline void setHitpoints(int newHitpoints)
 	{
@@ -30,10 +30,10 @@ public:
 	{
 		return m_hitpoints;
 	}
-    virtual StudentWorld* getWorld()
-    {
-        return m_world;
-    }
+	virtual StudentWorld* getWorld()
+	{
+		return m_world;
+	}
 
 
 private:
@@ -51,11 +51,11 @@ public:
 	}
 
 	virtual void doSomething();
-    
-    virtual StudentWorld* getWorld()
-    {
-        return Actor::getWorld();
-    }
+	
+	virtual StudentWorld* getWorld()
+	{
+		return Actor::getWorld();
+	}
 
 private:
 	int m_water;

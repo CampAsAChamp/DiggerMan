@@ -8,13 +8,10 @@ using namespace std;
 
 void DiggerMan::doSomething()
 {
-	
+	cout << "X: " << getX() << "| Y: " << getY() << endl;
 	StudentWorld* world = getWorld();
 	
 	int numValue = 0;
-	//DELETING DIRT WHEN MOVING HANDLER
-	world->deleteDirt(getX(), getY());
-	
 	
 	//////////MOVE HANDLER//////////
 	if (world->getKey(numValue))
@@ -29,6 +26,7 @@ void DiggerMan::doSomething()
 			else if (getX() >= 1 && getDirection() == left)
 			{
 				moveTo(getX() - 1, getY());
+				world->deleteDirt(getX(), getY());
 				setDirection(left);
 			}
 		}
@@ -42,6 +40,7 @@ void DiggerMan::doSomething()
 			else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
 			{
 				moveTo(getX(), getY() + 1);
+				world->deleteDirt(getX(), getY());
 				setDirection(up);
 			}
 		}
@@ -54,7 +53,8 @@ void DiggerMan::doSomething()
 			
 			else if (getX() <= MAXSIZE_X - 1 && getDirection() == right)
 			{
-				moveTo(getX() + 1, getY());
+				moveTo(getX() + 1, getY());				
+				world->deleteDirt(getX(), getY());
 				setDirection(right);
 			}
 		}
@@ -68,6 +68,7 @@ void DiggerMan::doSomething()
 			else if (getY() >= 1 && getDirection() == down)
 			{
 				moveTo(getX(), getY() - 1);
+				world->deleteDirt(getX(), getY());
 				setDirection(down);
 			}
 			
