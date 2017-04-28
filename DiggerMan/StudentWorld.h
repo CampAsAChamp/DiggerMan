@@ -68,7 +68,7 @@ public:
             {
                 if (m_dirt[y][x] != nullptr)
                 {
-                    if ((x < 64) && (y < 60) && m_dirt[y][x]->isVisible())
+                    if ((x < MAXSIZE_Y) && (y < MAXSIZE_X) && m_dirt[y][x]->isVisible())
                     {
                         m_dirt[y][x]->setVisible(false);
                     }
@@ -77,17 +77,14 @@ public:
         }
     }
     
-    
     virtual int move()
     {
         // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
         // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
         
 		StudentWorld::setGameText();
-        
+    
         m_diggerman->doSomething();
-
-        
 
         return GWSTATUS_CONTINUE_GAME;
     }
