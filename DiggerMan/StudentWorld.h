@@ -60,40 +60,35 @@ public:
         return GWSTATUS_CONTINUE_GAME;
     }
     
+    void deleteDirt(int xPassed , int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
+    {
+        for (int x = xPassed; x < xPassed + 4; x++)
+        {
+            for (int y = yPassed; y < yPassed + 4; y++)
+            {
+                if (m_dirt[y][x] != nullptr)
+                {
+                    if ((x < 64) && (y < 60) && m_dirt[y][x]->isVisible())
+                    {
+                        m_dirt[y][x]->setVisible(false);
+                    }
+                }
+            }
+        }
+    }
+    
+    
     virtual int move()
     {
         // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
         // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
         
 		StudentWorld::setGameText();
-
-
-        int up = KEY_PRESS_UP;
-        int down = KEY_PRESS_DOWN;
-        int left = KEY_PRESS_LEFT;
-        int right = KEY_PRESS_RIGHT;
         
-        int numValue = 0;
-      
-        if (getKey(numValue))
-        {
-            if (numValue == up)
-            {
-                m_diggerman->doSomething(KEY_PRESS_UP);
-            }
-            else if (numValue == down)
-            {
-                m_diggerman->doSomething(KEY_PRESS_DOWN);
-            }
-            else if (numValue == right)
-            {
-                m_diggerman->doSomething(KEY_PRESS_RIGHT);
-            }
-            else if (numValue == left)
-            {
-                m_diggerman->doSomething(KEY_PRESS_LEFT);
-            }
-        }
+        m_diggerman->doSomething();
+
+        
+
         return GWSTATUS_CONTINUE_GAME;
     }
     

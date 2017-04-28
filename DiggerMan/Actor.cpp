@@ -6,66 +6,77 @@ using namespace std;
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 
-void DiggerMan::doSomething(int value)
+void DiggerMan::doSomething()
 {
 	cout << "X: " << getX() << " | Y: " << getY() << endl;
-
-	//////////MOVE HANDLER//////////
-	if (value == KEY_PRESS_LEFT)
+    
+    StudentWorld* world = getWorld();
+    
+    int numValue = 0;
+    int xPos = getX();
+    int yPos = getY();
+    
+    //DELETING DIRT WHEN MOVING HANDLER
+    world->deleteDirt(xPos, yPos);
+    
+    
+    //////////MOVE HANDLER//////////
+	if (world->getKey(numValue))
 	{
-		if (getDirection() != left)
-		{
-			setDirection(left);
-		}
+        if (numValue == KEY_PRESS_LEFT)
+        {
+            if (getDirection() != left)
+            {
+                setDirection(left);
+            }
 
-		else if (getX() >= 1 && getDirection() == left)
-		{
-			moveTo(getX() - 1, getY());
-			setDirection(left);
-		}
-	}
-
-	else if (value == KEY_PRESS_UP)
-	{
-		if (getDirection() != up)
-		{
-			setDirection(up);
-		}
-
-		else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
-		{
-			moveTo(getX(), getY() + 1);
-			setDirection(up);
-		}
-	}
-
-	else if (value == KEY_PRESS_DOWN)
-	{
-		if (getDirection() != down)
-		{
-			setDirection(down);
-		}
-
-		else if (getY() >= 1 && getDirection() == down)
-		{
-			moveTo(getX(), getY() - 1);
-			setDirection(down);
-		}
-	}
-
-	else if (value == KEY_PRESS_RIGHT)
-	{
-		if (getDirection() != right)
-		{
-			setDirection(right);
-		}
-
-		else if (getX() <= MAXSIZE_X - 1 && getDirection() == right)
-		{
-			moveTo(getX() + 1, getY());
-			setDirection(right);
-		}
-	}
+            else if (getX() >= 1 && getDirection() == left)
+            {
+                moveTo(getX() - 1, getY());
+                setDirection(left);
+            }
+        }
+        if (numValue == KEY_PRESS_UP)
+        {
+            if (getDirection() != up)
+            {
+                setDirection(up);
+            }
+            
+            else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
+            {
+                moveTo(getX(), getY() + 1);
+                setDirection(up);
+            }
+        }
+        if (numValue == KEY_PRESS_RIGHT)
+        {
+            if (getDirection() != right)
+            {
+                setDirection(right);
+            }
+            
+            else if (getX() <= MAXSIZE_X - 1 && getDirection() == right)
+            {
+                moveTo(getX() + 1, getY());
+                setDirection(right);
+            }
+        }
+        if (numValue == KEY_PRESS_DOWN)
+        {
+            if (getDirection() != down)
+            {
+                setDirection(down);
+            }
+            
+            else if (getY() >= 1 && getDirection() == down)
+            {
+                moveTo(getX(), getY() - 1);
+                setDirection(down);
+            }
+            
+        }
+    }
 }
 
 void Boulder::doSomething()
