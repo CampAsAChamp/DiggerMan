@@ -8,75 +8,71 @@ using namespace std;
 
 void DiggerMan::doSomething()
 {
-	cout << "X: " << getX() << " | Y: " << getY() << endl;
-    
-    StudentWorld* world = getWorld();
-    
-    int numValue = 0;
-    int xPos = getX();
-    int yPos = getY();
-    
-    //DELETING DIRT WHEN MOVING HANDLER
-    world->deleteDirt(xPos, yPos);
-    
-    
-    //////////MOVE HANDLER//////////
+	
+	StudentWorld* world = getWorld();
+	
+	int numValue = 0;
+	//DELETING DIRT WHEN MOVING HANDLER
+	world->deleteDirt(getX(), getY());
+	
+	
+	//////////MOVE HANDLER//////////
 	if (world->getKey(numValue))
 	{
-        if (numValue == KEY_PRESS_LEFT)
-        {
-            if (getDirection() != left)
-            {
-                setDirection(left);
-            }
+		if (numValue == KEY_PRESS_LEFT)
+		{
+			if (getDirection() != left)
+			{
+				setDirection(left);
+			}
 
-            else if (getX() >= 1 && getDirection() == left)
-            {
-                moveTo(getX() - 1, getY());
-                setDirection(left);
-            }
-        }
-        if (numValue == KEY_PRESS_UP)
-        {
-            if (getDirection() != up)
-            {
-                setDirection(up);
-            }
-            
-            else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
-            {
-                moveTo(getX(), getY() + 1);
-                setDirection(up);
-            }
-        }
-        if (numValue == KEY_PRESS_RIGHT)
-        {
-            if (getDirection() != right)
-            {
-                setDirection(right);
-            }
-            
-            else if (getX() <= MAXSIZE_X - 1 && getDirection() == right)
-            {
-                moveTo(getX() + 1, getY());
-                setDirection(right);
-            }
-        }
-        if (numValue == KEY_PRESS_DOWN)
-        {
-            if (getDirection() != down)
-            {
-                setDirection(down);
-            }
-            
-            else if (getY() >= 1 && getDirection() == down)
-            {
-                moveTo(getX(), getY() - 1);
-                setDirection(down);
-            }
-            
-        }
-    }
+			else if (getX() >= 1 && getDirection() == left)
+			{
+				moveTo(getX() - 1, getY());
+				setDirection(left);
+			}
+		}
+		if (numValue == KEY_PRESS_UP)
+		{
+			if (getDirection() != up)
+			{
+				setDirection(up);
+			}
+			
+			else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
+			{
+				moveTo(getX(), getY() + 1);
+				setDirection(up);
+			}
+		}
+		if (numValue == KEY_PRESS_RIGHT)
+		{
+			if (getDirection() != right)
+			{
+				setDirection(right);
+			}
+			
+			else if (getX() <= MAXSIZE_X - 1 && getDirection() == right)
+			{
+				moveTo(getX() + 1, getY());
+				setDirection(right);
+			}
+		}
+		if (numValue == KEY_PRESS_DOWN)
+		{
+			if (getDirection() != down)
+			{
+				setDirection(down);
+			}
+			
+			else if (getY() >= 1 && getDirection() == down)
+			{
+				moveTo(getX(), getY() - 1);
+				setDirection(down);
+			}
+			
+		}
+	}
 }
 
 void Boulder::doSomething()
