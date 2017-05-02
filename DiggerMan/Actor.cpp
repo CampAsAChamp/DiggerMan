@@ -79,15 +79,23 @@ void DiggerMan::doSomething()
 void Boulder::doSomething()
 {
 	//TODO: Check if still alive and immediately return
+	if (getHitpoints() == 0)
+		return;
+
+	if (isStable())
+		return;
+	else
+	{
+		//Push to waiting state
+	}
+
 
 }
 
 bool Boulder::isStable()
 {
 	//TODO: Check if 4 dirt below
-	//GraphObject G1 = getGraphObjects(getY());
-	//GraphObject temp = getGraphObjects(getY());
 
-
-	return true;
+	StudentWorld* world = getWorld();
+	return world->checkDirt(getX(), getY());
 }

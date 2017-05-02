@@ -22,9 +22,9 @@ const int MINESHAFT_BOTTOM = 16;
 class StudentWorld : public GameWorld
 {
 public:
-    StudentWorld(std::string assetDir)
-    : GameWorld(assetDir)
-    {}
+	StudentWorld(std::string assetDir)
+		: GameWorld(assetDir)
+	{}
 
 	void setGameText()
 	{
@@ -33,45 +33,45 @@ public:
 
 		GameWorld::setGameStatText(text);
 	}
-    
-    virtual int init()
-    {
+
+	virtual int init()
+	{
 		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
-        {
+		{
 			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
-            {
-                if (i < MINESHAFT_BOTTOM) //If below the mineshaft
-                {
-                    m_dirt[i][j] = new Dirt(this, j, i); //Add dirt to below the mineshaft
-                }
-                else
-                {
-                    if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
-                    {
+			{
+				if (i < MINESHAFT_BOTTOM) //If below the mineshaft
+				{
+					m_dirt[i][j] = new Dirt(this, j, i); //Add dirt to below the mineshaft
+				}
+				else
+				{
+					if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
+					{
 						m_dirt[i][j] = new Dirt(this, j, i);
-                    }
+					}
 					else
-					{ 
+					{
 						m_dirt[i][j] = new Dirt(this, j, i);
 						m_dirt[i][j]->setVisible(false);
 					}
-				
-                }
-            }
-        }
+
+				}
+			}
+		}
 		m_actor[20][20] = new Boulder(this, 20, 20); //Testing to see if I can spawn a boulder
-	
+
 		m_diggerman = new DiggerMan(this);
-        
-        return GWSTATUS_CONTINUE_GAME;
-    }
-    
-    void deleteDirt(int xPassed , int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
-    {
-        for (int x = xPassed; x < xPassed + 4; x++)
-        {
-            for (int y = yPassed; y < yPassed + 4; y++)
-            {
+
+		return GWSTATUS_CONTINUE_GAME;
+	}
+
+	void deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
+	{
+		for (int x = xPassed; x < xPassed + 4; x++)
+		{
+			for (int y = yPassed; y < yPassed + 4; y++)
+			{
 				if (m_dirt[y][x] != nullptr)
 				{
 					if ((x < MAXSIZE_Y) && (y < MAXSIZE_X))
@@ -83,25 +83,38 @@ public:
 				{
 					return;
 				}
-            }
-        }
-    }
-    
-    virtual int move()
-    {
-        // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
-        // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-        
-		StudentWorld::setGameText();
-    
-        m_diggerman->doSomething();
+			}
+		}
+	}
 
-        return GWSTATUS_CONTINUE_GAME;
-    }
-    
-    virtual void cleanUp()
-    {}
-    
+	bool checkDirt(int xPassed, int yPassed)
+	{
+		for (int x = xPassed; x < xPassed + 4; x++)
+		{
+			if (m_dirt[yPassed - 1][x]->getID() != IMID_DIRT)
+			{
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+	virtual int move()
+	{
+		// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
+		// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
+
+		StudentWorld::setGameText();
+
+		m_diggerman->doSomething();
+
+		return GWSTATUS_CONTINUE_GAME;
+	}
+
+	virtual void cleanUp()
+	{}
+
 private:
 	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
 	Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
