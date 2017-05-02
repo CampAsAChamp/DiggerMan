@@ -116,7 +116,9 @@ private:
 };
 
 class Protester : public Actor
-{};
+{
+
+};
 
 class HardcoreProtestor : public Protester
 {};
