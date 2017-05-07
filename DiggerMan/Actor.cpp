@@ -5,6 +5,8 @@
 using namespace std;
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
+void Actor::doSomething()
+{}
 
 void DiggerMan::doSomething()
 {
@@ -82,20 +84,18 @@ void Boulder::doSomething()
 	if (getHitpoints() == 0)
 		return;
 
-	if (isStable())
+	if (getState() == stable)
 		return;
 	else
 	{
 		//Push to waiting state
+		m_state = waiting;
+
 	}
-
-
 }
 
 bool Boulder::isStable()
 {
-	//TODO: Check if 4 dirt below
-
 	StudentWorld* world = getWorld();
 	return world->checkDirt(getX(), getY());
 }

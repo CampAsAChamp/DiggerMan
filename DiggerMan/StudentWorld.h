@@ -61,6 +61,14 @@ public:
 		}
 		m_actor[20][20] = new Boulder(this, 20, 20); //Testing to see if I can spawn a boulder
 
+		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+		{
+			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+			{
+				m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+			}
+		}
+
 		m_diggerman = new DiggerMan(this);
 
 		return GWSTATUS_CONTINUE_GAME;
@@ -91,7 +99,7 @@ public:
 	{
 		for (int x = xPassed; x < xPassed + 4; x++)
 		{
-			if (m_dirt[yPassed - 1][x]->getID() != IMID_DIRT)
+			if (m_dirt[yPassed - 1][x]->getID() != IMID_DIRT && m_dirt[yPassed - 1][x]->isVisible())
 			{
 				return false;
 			}
@@ -107,18 +115,33 @@ public:
 
 		StudentWorld::setGameText();
 
-		m_diggerman->doSomething();
+		m_diggerman->doSomething(); //Diggerman doSomething
 
+		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+		{
+			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+			{
+				if (m_actor[i][j] != 0)
+				{
+					m_actor[i][j]->doSomething(); //Call doSomething for actor array
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
 		return GWSTATUS_CONTINUE_GAME;
 	}
 
-	virtual void cleanUp()
-	{}
+			virtual void cleanUp()
+			{}
 
-private:
-	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
-	Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
-	DiggerMan* m_diggerman;
-};
+		private:
+			Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
+			Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
+			DiggerMan* m_diggerman;
+
+		};
 
 #endif // STUDENTWORLD_H_

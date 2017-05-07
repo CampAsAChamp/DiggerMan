@@ -9,9 +9,10 @@ const int DM_START_Y = 60;
 
 class StudentWorld; //Forward declaration
 
-// Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
-
-//GraphObject(int imageID, int startX, int startY, DIRECTION startDirection, float size = 1.0, unsigned int depth = 0);
+enum BoulderState
+{
+	stable, falling, waiting
+};
 
 class Actor : public GraphObject
 {
@@ -35,6 +36,7 @@ public:
 		return m_world;
 	}
 
+	virtual void doSomething();
 
 private:
 	int m_hitpoints;
@@ -106,13 +108,21 @@ public:
 	Boulder(StudentWorld * world, int startX, int startY)
 		:Actor(world, IMID_BOULDER, startX, startY, down, 1.0, 1)
 	{
+		this->m_state = stable;
 		setVisible(true);
 	}
 
 	void doSomething();
 	bool isStable();
+	BoulderState getState()
+	{
+		return m_state;
+	}
+	
+	
 
 private:
+	BoulderState m_state;
 };
 
 class Protester : public Actor
