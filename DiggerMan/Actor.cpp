@@ -10,7 +10,7 @@ void Actor::doSomething()
 
 void DiggerMan::doSomething()
 {
-	//cout << "X: " << getX() << "| Y: " << getY() << endl;
+	cout << "X: " << getX() << "| Y: " << getY() << endl;
 	StudentWorld* world = getWorld();
 	
 	int numValue = 0;
@@ -53,7 +53,7 @@ void DiggerMan::doSomething()
 				setDirection(right);
 			}
 			
-			else if (getX() <= MAXSIZE_X - 1 && getDirection() == right)
+			else if (getX() <= MAXSIZE_X - 5 && getDirection() == right)
 			{
 				moveTo(getX() + 1, getY());				
 				world->deleteDirt(getX(), getY());

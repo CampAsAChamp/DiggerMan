@@ -12,7 +12,7 @@
 using namespace std;
 
 //This is Nick's branch
-const int MAXSIZE_X = 60;
+const int MAXSIZE_X = 64;
 const int MAXSIZE_Y = 64;
 
 const int MINESHAFT_START_LEFT = 29;
@@ -38,29 +38,28 @@ public:
 
 	virtual int init()
 	{
-		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+		for (int x = 0; x < MAXSIZE_X;x++) //VERTICAL AXIS (X-Axis)
 		{
-			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+			for (int y = 0; y < (MAXSIZE_Y); y++) //HORIZONTAL AXIS (Y-Axis)
 			{
-				if (i < MINESHAFT_BOTTOM) //If below the mineshaft
-				{
-					m_dirt[i][j] = new Dirt(this, j, i); //Add dirt to below the mineshaft
-				}
-				else
-				{
-					if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
-					{
-						m_dirt[i][j] = new Dirt(this, j, i);
-					}
-					else
-					{
-						m_dirt[i][j] = new Dirt(this, j, i);
-						m_dirt[i][j]->setVisible(false);
-					}
+				m_dirt[x][y] = new Dirt(this, x, y);
 
+				if (x > MINESHAFT_START_LEFT && x < MINESHAFT_STOP_RIGHT) //If below the mineshaft
+				{
+					if (y > MINESHAFT_BOTTOM )
+					{
+						m_dirt[x][y]->setVisible(false);
+					}
+				}
+
+				if (y > MAXSIZE_Y - 5)
+				{
+					m_dirt[x][y]->setVisible(false);
 				}
 			}
 		}
+
+		
 
 		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
 		{
