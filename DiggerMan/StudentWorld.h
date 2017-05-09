@@ -24,9 +24,9 @@ const int MINESHAFT_BOTTOM = 4;
 class StudentWorld : public GameWorld
 {
 public:
-    StudentWorld(std::string assetDir)
-    : GameWorld(assetDir)
-    {}
+	StudentWorld(std::string assetDir)
+		: GameWorld(assetDir)
+	{}
 
 	void setGameText()
 	{
@@ -35,73 +35,55 @@ public:
 
 		GameWorld::setGameStatText(text);
 	}
-    
-    virtual int init()
-    {
-		srand(time(NULL));
-		int randX = rand() % MAXSIZE_X;
-		int randY = rand() % (MAXSIZE_Y - 8);
-		cout << "boulder location X: " << randX << " Y: " << randY << endl;
-		int boulderAtLVL = 3;
 
-		for (int i = 0; i < MAXSIZE_Y; i++) //HORIZONTAL AXIS (X-Axis)
-        {
-			for (int j = 0; j < (MAXSIZE_X); j++) //VERTICAL AXIS (Y-Axis)
-            {
-                if (j < MINESHAFT_BOTTOM) //If below the mineshaft
-                {
-                    m_dirt[i][j] = new Dirt(this, i, j); //Add dirt to below the mineshaft
-                }
-                else
-                {
-                    if (i <= MINESHAFT_START_LEFT || i >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
-                    {
-						m_dirt[i][j] = new Dirt(this, i, j);
-                    }
+	virtual int init()
+	{
+		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+		{
+			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+			{
+				if (i < MINESHAFT_BOTTOM) //If below the mineshaft
+				{
+					m_dirt[i][j] = new Dirt(this, j, i); //Add dirt to below the mineshaft
+				}
+				else
+				{
+					if (j <= MINESHAFT_START_LEFT || j >= MINESHAFT_STOP_RIGHT) //If left or right to the mineshaft
+					{
+						m_dirt[i][j] = new Dirt(this, j, i);
+					}
 					else
-					{ 
-						m_dirt[i][j] = new Dirt(this, i, j);
+					{
+						m_dirt[i][j] = new Dirt(this, j, i);
 						m_dirt[i][j]->setVisible(false);
 					}
-				
-                }
-            }
-        }
-		for (int i = 0; i < boulderAtLVL; i++)
-		{
-			if (randY < (MAXSIZE_Y - 8))
-			{
-				cout << "boulder location X: " << randX << " Y: " << randY << endl;
-				m_actor[i][i] = new Boulder(this, randX, randY); //Testing to see if I can spawn a boulder
-				for (int x = 0; x < 4; x++){
-					for (int y = 0; y < 4; y++){
-						m_dirt[randX + x][randY + y]->setVisible(false);
-						cout << " errX: " << randX + x << " errY: " << randY + y << endl;
-					}
+
 				}
-				randX = rand() % MAXSIZE_X;
-				randY = rand() % (MAXSIZE_Y - 8);
-			}
-			else
-			{
-				randX = rand() % MAXSIZE_X;
-				randY = rand() % (MAXSIZE_Y - 8);
-				i--;
 			}
 		}
-	
+
+		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+		{
+			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+			{
+				m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+			}
+		}
+
+		m_actor[40][20] = new Boulder(this, 40, 20); //Testing to see if I can spawn a boulder
+
 		m_diggerman = new DiggerMan(this);
-        
-        return GWSTATUS_CONTINUE_GAME;
-    }
-    
-    void deleteDirt(int xPassed , int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
-    {
-        for (int x = xPassed; x < xPassed + 4; x++)
-        {
-            for (int y = yPassed; y < yPassed + 4; y++)
-            {
-				if (m_dirt[x][y] != nullptr)
+
+		return GWSTATUS_CONTINUE_GAME;
+	}
+
+	void deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
+	{
+		for (int x = xPassed; x < xPassed + 4; x++)
+		{
+			for (int y = yPassed; y < yPassed + 4; y++)
+			{
+				if (m_dirt[y][x] != nullptr)
 				{
 					if ((x < MAXSIZE_Y) && (y < MAXSIZE_X))
 					{
@@ -112,29 +94,63 @@ public:
 				{
 					return;
 				}
-            }
-        }
-    }
-    
-    virtual int move()
-    {
-        // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
-        // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-        
-		StudentWorld::setGameText();
-    
-        m_diggerman->doSomething();
+			}
+		}
+	}
 
-        return GWSTATUS_CONTINUE_GAME;
-    }
-    
-    virtual void cleanUp()
-    {}
-    
+	bool checkDirtBelow(int xPassed, int yPassed)
+	{
+		bool dirtFound = true;
+
+		for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+		{
+			if (m_dirt[yPassed - 1][xToCheck]->isVisible())
+			{
+				dirtFound = true;
+				break;
+			}
+			else
+			{
+				dirtFound = false;
+			}
+		}
+		return dirtFound;
+	}
+
+	virtual int move()
+	{
+		// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
+		// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
+
+		StudentWorld::setGameText();
+
+		m_diggerman->doSomething(); //Diggerman doSomething
+
+		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+		{
+			for (int j = 0; j < MAXSIZE_Y; j++) //HORIZONTAL AXIS (Y-Axis)
+			{
+				if (m_actor[i][j] != 0)
+				{
+					m_actor[i][j]->doSomething(); //Call doSomething for actor array
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+		return GWSTATUS_CONTINUE_GAME;
+	}
+
+	virtual void cleanUp()
+	{}
+
 private:
-	Actor* m_actor[MAXSIZE_X][MAXSIZE_Y];
+	Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
 	Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
 	DiggerMan* m_diggerman;
+
 };
 
 #endif // STUDENTWORLD_H_

@@ -5,6 +5,8 @@
 using namespace std;
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
+void Actor::doSomething()
+{}
 
 void DiggerMan::doSomething()
 {
@@ -76,18 +78,25 @@ void DiggerMan::doSomething()
 	}
 }
 
+bool Boulder::isStable()
+{	
+	StudentWorld* world = getWorld();
+	return world->checkDirtBelow(getX(), getY());
+}
+
 void Boulder::doSomething()
 {
 	//TODO: Check if still alive and immediately return
+	if (isStable())
+	{
+		m_state = stable;
+		cout << "\tBoulder at " << getX() << "|" << getY() << " stable\n";
+	}
+	else
+	{
+		m_state = waiting;
+		cout << "\tBoulder at " << getX() << "|" << getY() << " NOT stable\n";
 
-}
+	}
 
-bool Boulder::isStable()
-{
-	//TODO: Check if 4 dirt below
-	//GraphObject G1 = getGraphObjects(getY());
-	//GraphObject temp = getGraphObjects(getY());
-
-
-	return true;
 }
