@@ -79,17 +79,9 @@ void DiggerMan::doSomething()
 }
 
 bool Boulder::isStable()
-{
+{	
 	StudentWorld* world = getWorld();
-	
-	if (world->checkDirtBelow(40,20)) //Check if there is 4 dirt below the boulder
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return world->checkDirtBelow(getX(), getY());
 }
 
 void Boulder::doSomething()
@@ -98,12 +90,12 @@ void Boulder::doSomething()
 	if (isStable())
 	{
 		m_state = stable;
-		cout << "\tBoulder is stable\n";
+		cout << "\tBoulder at " << getX() << "|" << getY() << " stable\n";
 	}
 	else
 	{
 		m_state = waiting;
-		cout << "\tBoulder is NOT STABLE\n";
+		cout << "\tBoulder at " << getX() << "|" << getY() << " NOT stable\n";
 
 	}
 
