@@ -6,6 +6,8 @@
 #include "Actor.h"
 #include <string>
 #include <iostream>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>
 
 using namespace std;
 
@@ -15,7 +17,7 @@ const int MAXSIZE_Y = 64;
 
 const int MINESHAFT_START_LEFT = 29;
 const int MINESHAFT_STOP_RIGHT = 34;
-const int MINESHAFT_BOTTOM = 16;
+const int MINESHAFT_BOTTOM = 4;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
@@ -85,7 +87,7 @@ public:
 				{
 					if ((x < MAXSIZE_Y) && (y < MAXSIZE_X))
 					{
-						m_dirt[y][x]->setVisible(false);
+						m_dirt[x][y]->setVisible(false);
 					}
 				}
 				else

@@ -10,7 +10,7 @@ void Actor::doSomething()
 
 void DiggerMan::doSomething()
 {
-	cout << "X: " << getX() << "| Y: " << getY() << endl;
+	//cout << "X: " << getX() << "| Y: " << getY() << endl;
 	StudentWorld* world = getWorld();
 	
 	int numValue = 0;
