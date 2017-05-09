@@ -78,24 +78,33 @@ void DiggerMan::doSomething()
 	}
 }
 
-void Boulder::doSomething()
-{
-	//TODO: Check if still alive and immediately return
-	if (getHitpoints() == 0)
-		return;
-
-	if (getState() == stable)
-		return;
-	else
-	{
-		//Push to waiting state
-		m_state = waiting;
-
-	}
-}
-
 bool Boulder::isStable()
 {
 	StudentWorld* world = getWorld();
-	return world->checkDirt(getX(), getY());
+	
+	if (world->checkDirtBelow(40,20)) //Check if there is 4 dirt below the boulder
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Boulder::doSomething()
+{
+	//TODO: Check if still alive and immediately return
+	if (isStable())
+	{
+		m_state = stable;
+		cout << "\tBoulder is stable\n";
+	}
+	else
+	{
+		m_state = waiting;
+		cout << "\tBoulder is NOT STABLE\n";
+
+	}
+
 }

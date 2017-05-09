@@ -59,7 +59,6 @@ public:
 				}
 			}
 		}
-		m_actor[20][20] = new Boulder(this, 20, 20); //Testing to see if I can spawn a boulder
 
 		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
 		{
@@ -68,6 +67,8 @@ public:
 				m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
 			}
 		}
+
+		m_actor[40][20] = new Boulder(this, 40, 20); //Testing to see if I can spawn a boulder
 
 		m_diggerman = new DiggerMan(this);
 
@@ -95,17 +96,23 @@ public:
 		}
 	}
 
-	bool checkDirt(int xPassed, int yPassed)
+	bool checkDirtBelow(int xPassed, int yPassed)
 	{
-		for (int x = xPassed; x < xPassed + 4; x++)
+		bool dirtFound = true;
+
+		for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
 		{
-			if (m_dirt[yPassed - 1][x]->getID() != IMID_DIRT && m_dirt[yPassed - 1][x]->isVisible())
+			if (m_dirt[yPassed - 1][xToCheck]->isVisible())
 			{
-				return false;
+				dirtFound = true;
+				break;
+			}
+			else
+			{
+				dirtFound = false;
 			}
 		}
-		return true;
-
+		return dirtFound;
 	}
 
 	virtual int move()
@@ -119,7 +126,7 @@ public:
 
 		for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
 		{
-			for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+			for (int j = 0; j < MAXSIZE_Y; j++) //HORIZONTAL AXIS (Y-Axis)
 			{
 				if (m_actor[i][j] != 0)
 				{
@@ -134,14 +141,14 @@ public:
 		return GWSTATUS_CONTINUE_GAME;
 	}
 
-			virtual void cleanUp()
-			{}
+	virtual void cleanUp()
+	{}
 
-		private:
-			Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
-			Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
-			DiggerMan* m_diggerman;
+private:
+	Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
+	Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
+	DiggerMan* m_diggerman;
 
-		};
+};
 
 #endif // STUDENTWORLD_H_
