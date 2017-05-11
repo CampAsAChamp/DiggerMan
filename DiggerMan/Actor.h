@@ -32,7 +32,7 @@ public:
     {
         return m_hitpoints;
     }
-    virtual bool alive()
+    virtual bool isAlive()
     {
         return m_hitpoints > 0;
     }

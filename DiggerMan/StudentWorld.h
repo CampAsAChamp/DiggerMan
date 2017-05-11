@@ -32,6 +32,7 @@ public:
     virtual int move();
     virtual void cleanUp();
 
+	void removeDeadActors();
     void deleteDirt(int xPassed, int yPassed); 
     bool checkActorBelow(int xPassed, int yPassed, int IMID);
     bool checkDirtBelow(int xPassed, int yPassed);

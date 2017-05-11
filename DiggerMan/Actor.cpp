@@ -88,7 +88,7 @@ bool Boulder::isStable()
 void Boulder::doSomething()
 {
     //TODO: Check if still alive and immediately return
-    if (!alive())
+    if (!isAlive())
     {
         cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
         return;
@@ -130,15 +130,24 @@ void Boulder::doSomething()
         //Then must set state to dead so it can be removed from game
         cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
 
-        if (getY() >= 1 && !getWorld()->checkActorBelow(getX(), getY(),IMID_DIRT))
+		if (getY() >= 1 && !getWorld()->checkActorBelow(getX(), getY(), IMID_DIRT)) //If there isn't any dirt below it and not at the bottom, then keep falling
         {
             moveTo(getX(), (getY() - 1));
         }
-        else
+		else if (getWorld()->checkActorBelow(getX(), getY(), IMID_BOULDER))
+		{
+			m_state = stable;
+			setHitpoints(0);
+			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
+		}
+        else 
         {
+			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
             m_state = stable;
             setHitpoints(0);
             cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
         }
+
+
     }
 }
