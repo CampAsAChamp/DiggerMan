@@ -35,7 +35,9 @@ public:
 	void removeDeadActors();
     void deleteDirt(int xPassed, int yPassed); 
     bool checkActorBelow(int xPassed, int yPassed, int IMID);
+	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
+	void setDiggermanHP(int hitPoints);
    
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];

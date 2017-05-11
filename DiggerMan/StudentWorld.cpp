@@ -51,8 +51,10 @@ int StudentWorld::init()
 
 	m_actor[25][55] = new Boulder(this, 25, 55); //Testing to see if I can spawn a boulder
 	m_actor[25][45] = new Boulder(this, 25, 45); //Testing to see if I can spawn a second boulder
+	m_actor[10][10] = new Boulder(this, 10, 10);
 	deleteDirt(25, 55);//Temporary so boulders don't spawn on top of dirt
 	deleteDirt(25, 45);//Temporary so boulders don't spawn on top of dirt
+	deleteDirt(10, 10);//Temporary so boulders don't spawn on top of dirt
 
 	m_diggerman = new DiggerMan(this);
 
@@ -79,6 +81,26 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
 		}
 	}
 }
+
+bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
+{
+	bool found = true;
+
+	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+	{
+		if ((m_diggerman->getY() == yPassed-1))
+		{
+			found = true;
+			break;
+		}
+		else
+		{
+			found = false;
+		}
+	}
+	return found;
+}
+
 
 bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 {
@@ -109,6 +131,11 @@ bool StudentWorld::checkActorBelow(int xPassed, int yPassed, int IMID)
 		{
 			return checkDirtBelow(xPassed, yPassed); //Has to call different function as the array to check is different
 		}
+
+		else if (IMID = IMID_PLAYER)
+		{
+
+		}
 		else if (m_actor[xToCheck][yPassed - 1] != 0)
 		{
 			if (m_actor[xToCheck][yPassed - 1]->getID() == IMID && m_actor[xToCheck][yPassed - 1]->isVisible())
@@ -126,6 +153,33 @@ bool StudentWorld::checkActorBelow(int xPassed, int yPassed, int IMID)
 	}
 	return found;
 }
+void StudentWorld::setDiggermanHP(int hitPoints)
+{
+	m_diggerman->setHitpoints(hitPoints);
+	cout << "Diggerman is dead\n";
+}
+
+void StudentWorld::removeDeadActors()
+{
+	for (int i = 0; i < MAXSIZE_X; i++)
+	{
+		for (int j = 0; j < MAXSIZE_Y; j++)
+		{
+			if (m_actor[i][j] != 0 && !m_actor[i][j]->isAlive())
+			{
+				m_actor[i][j]->setVisible(false);
+				m_actor[i][j] = 0;
+				cout << "\tDeleted actor at " << i << " | " << j << endl;
+				delete m_actor[i][j];
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+}
+
 int StudentWorld::move()
 {
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
@@ -152,23 +206,6 @@ int StudentWorld::move()
 	return GWSTATUS_CONTINUE_GAME;
 }
 
-void StudentWorld::removeDeadActors()
-{
-	for (int i = 0; i < MAXSIZE_X; i++)
-	{
-		for (int j = 0; j < MAXSIZE_Y; j++)
-		{
-			if (m_actor[i][j] != 0 && !m_actor[i][j]->isAlive())
-			{
-				m_actor[i][j]->setVisible(false); //Remove all dead actors
-			}
-			else
-			{
-				continue;
-			}
-		}
-	}
-}
 
 void StudentWorld::cleanUp()
 {}
