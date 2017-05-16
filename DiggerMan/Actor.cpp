@@ -10,7 +10,7 @@ void Actor::doSomething()
 
 void DiggerMan::doSomething()
 {
-	// cout << "X: " << getX() << "| Y: " << getY() << endl;
+	//cout << "X: " << getX() << "| Y: " << getY() << endl;
 	StudentWorld* world = getWorld();
 
 	int numValue = 0;
@@ -81,13 +81,11 @@ void DiggerMan::doSomething()
 bool Boulder::isStable()
 {
 	StudentWorld* world = getWorld();
-	//return world->checkDirtBelow(getX(), getY());
-	return world->checkActorBelow(getX(), getY(), IMID_DIRT);
+	return world->checkDirtBelow(getX(), getY());
 }
 
 void Boulder::doSomething()
 {
-	//TODO: Check if still alive and immediately return
 	if (!isAlive())
 	{
 		cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
@@ -122,7 +120,7 @@ void Boulder::doSomething()
 		getWorld()->playSound(SOUND_FALLING_ROCK);
 
 	}
-	if (m_state == falling)
+	else if (m_state == falling)
 	{
 		//Move down one square each tick until it hits the bottom of the field
 		//Runs on top of another boulder
@@ -130,27 +128,31 @@ void Boulder::doSomething()
 		//Then must set state to dead so it can be removed from game
 		cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
 
-		if (getY() >= 1 && !getWorld()->checkActorBelow(getX(), getY(), IMID_DIRT)) //If there isn't any dirt below it and not at the bottom, then keep falling
+		if (getWorld()->checkDirtBelow(getX(), getY()) || getY() < 1)
 		{
-			moveTo(getX(), (getY() - 1));
+			m_state = stable;
+			setHitpoints(0);
+			cout << "\tBoulder at " << getX() << "|" << getY() << " is dead at the bottom\n";
+			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
 		}
-		else if (getWorld()->checkActorBelow(getX(), getY(), IMID_BOULDER))
+
+		else if (getWorld()->checkBoulderBelow(getX(),getY())) 
 		{
 			m_state = stable;
 			setHitpoints(0);
 			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
 		}
-		else if (getWorld()->checkDiggermanBelow(getX(), getY()))
+
+		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
 		{
+			m_state = stable;
 			getWorld()->setDiggermanHP(0);
 			cout << "\t Boulder hit DiggerMan\n";
 		}
+
 		else
 		{
-			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
-			m_state = stable;
-			setHitpoints(0);
-			cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
+			moveTo(getX(), (getY() - 1)); //If there isn't any dirt below it and not at the bottom, then keep falling
 		}
 	}
 }

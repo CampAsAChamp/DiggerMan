@@ -51,10 +51,10 @@ int StudentWorld::init()
 
 	m_actor[25][55] = new Boulder(this, 25, 55); //Testing to see if I can spawn a boulder
 	m_actor[25][45] = new Boulder(this, 25, 45); //Testing to see if I can spawn a second boulder
-	m_actor[10][10] = new Boulder(this, 10, 10);
+	//m_actor[10][10] = new Boulder(this, 10, 10);
 	deleteDirt(25, 55);//Temporary so boulders don't spawn on top of dirt
 	deleteDirt(25, 45);//Temporary so boulders don't spawn on top of dirt
-	deleteDirt(10, 10);//Temporary so boulders don't spawn on top of dirt
+	//deleteDirt(10, 10);//Temporary so boulders don't spawn on top of dirt
 
 	m_diggerman = new DiggerMan(this);
 
@@ -82,26 +82,6 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
 	}
 }
 
-bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
-{
-	bool found = true;
-
-	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
-	{
-		if ((m_diggerman->getY() == yPassed-1))
-		{
-			found = true;
-			break;
-		}
-		else
-		{
-			found = false;
-		}
-	}
-	return found;
-}
-
-
 bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 {
 	bool dirtFound = true;
@@ -121,42 +101,41 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 	return dirtFound;
 }
 
-bool StudentWorld::checkActorBelow(int xPassed, int yPassed, int IMID)
+bool StudentWorld::checkBoulderBelow(int xPassed, int yPassed)
 {
-	bool found = true;
+	bool boulderFound = false;
 
 	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
 	{
-		if (IMID == IMID_DIRT)
+		if (m_actor[xToCheck][yPassed - 4] != 0)
 		{
-			return checkDirtBelow(xPassed, yPassed); //Has to call different function as the array to check is different
-		}
-
-		else if (IMID = IMID_PLAYER)
-		{
-
-		}
-		else if (m_actor[xToCheck][yPassed - 1] != 0)
-		{
-			if (m_actor[xToCheck][yPassed - 1]->getID() == IMID && m_actor[xToCheck][yPassed - 1]->isVisible())
+			if (m_actor[xToCheck][yPassed - 4]->isVisible())
 			{
-				found = true;
-				break;
-			}
-			else
-			{
-				found = false;
+				boulderFound = true;
+				return true;
 			}
 		}
 		else
+		{
 			continue;
+		}
 	}
-	return found;
+	return false;
 }
+
+bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
+{
+	if ((yPassed - 4) == m_diggerman->getY() && xPassed == m_diggerman->getX())
+		return true;
+	else
+		return false;
+	
+}
+
 void StudentWorld::setDiggermanHP(int hitPoints)
 {
 	m_diggerman->setHitpoints(hitPoints);
-	cout << "Diggerman is dead\n";
+	cout << "\tDiggerman is dead\n";
 }
 
 void StudentWorld::removeDeadActors()
@@ -177,6 +156,13 @@ void StudentWorld::removeDeadActors()
 				continue;
 			}
 		}
+	}
+	if (!m_diggerman->isAlive())
+	{
+		m_diggerman->setVisible(false);
+		//m_diggerman = 0;
+		cout << "\tDeleted DiggerMan at " << m_diggerman->getX() << " | " << m_diggerman->getY() << endl;
+		//delete m_diggerman;
 	}
 }
 
@@ -205,7 +191,6 @@ int StudentWorld::move()
 	removeDeadActors(); //Checks every tick to remove the actors that are dead
 	return GWSTATUS_CONTINUE_GAME;
 }
-
 
 void StudentWorld::cleanUp()
 {}

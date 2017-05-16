@@ -34,7 +34,8 @@ public:
 
 	void removeDeadActors();
     void deleteDirt(int xPassed, int yPassed); 
-    bool checkActorBelow(int xPassed, int yPassed, int IMID);
+    //bool checkActorBelow(int xPassed, int yPassed, int IMID);
+	bool checkBoulderBelow(int xPassed, int yPassed);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
 	void setDiggermanHP(int hitPoints);
