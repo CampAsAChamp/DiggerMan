@@ -70,7 +70,7 @@ int StudentWorld::init()
 			i--;
 		}
 	}
-
+  
 	m_diggerman = new DiggerMan(this);
 
 	return GWSTATUS_CONTINUE_GAME;
@@ -138,33 +138,71 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 	return dirtFound;
 }
 
-bool StudentWorld::checkActorBelow(int xPassed, int yPassed, int IMID)
+bool StudentWorld::checkBoulderBelow(int xPassed, int yPassed)
 {
-	bool found = true;
+	bool boulderFound = false;
 
 	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
 	{
-		if (IMID == IMID_DIRT)
+		if (m_actor[xToCheck][yPassed - 4] != 0)
 		{
-			return checkDirtBelow(xPassed, yPassed); //Has to call different function as the array to check is different
-		}
-		else if (m_actor[xToCheck][yPassed - 1] != 0)
-		{
-			if (m_actor[xToCheck][yPassed - 1]->getID() == IMID && m_actor[xToCheck][yPassed - 1]->isVisible())
+			if (m_actor[xToCheck][yPassed - 4]->isVisible())
 			{
-				found = true;
-				break;
-			}
-			else
-			{
-				found = false;
+				boulderFound = true;
+				return true;
 			}
 		}
 		else
+		{
 			continue;
+		}
 	}
-	return found;
+	return false;
 }
+
+bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
+{
+	if ((yPassed - 4) == m_diggerman->getY() && xPassed == m_diggerman->getX())
+		return true;
+	else
+		return false;
+	
+}
+
+void StudentWorld::setDiggermanHP(int hitPoints)
+{
+	m_diggerman->setHitpoints(hitPoints);
+	cout << "\tDiggerman is dead\n";
+}
+
+void StudentWorld::removeDeadActors()
+{
+	for (int i = 0; i < MAXSIZE_X; i++)
+	{
+		for (int j = 0; j < MAXSIZE_Y; j++)
+		{
+			if (m_actor[i][j] != 0 && !m_actor[i][j]->isAlive())
+			{
+				m_actor[i][j]->setVisible(false);
+				m_actor[i][j] = 0;
+				cout << "\tDeleted actor at " << i << " | " << j << endl;
+				delete m_actor[i][j];
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+	if (!m_diggerman->isAlive())
+	{
+		m_diggerman->setVisible(false);
+		//m_diggerman = 0;
+		cout << "\tDeleted DiggerMan at " << m_diggerman->getX() << " | " << m_diggerman->getY() << endl;
+		//delete m_diggerman;
+	}
+}
+
 int StudentWorld::move()
 {
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
@@ -189,24 +227,6 @@ int StudentWorld::move()
 	}
 	removeDeadActors(); //Checks every tick to remove the actors that are dead
 	return GWSTATUS_CONTINUE_GAME;
-}
-
-void StudentWorld::removeDeadActors()
-{
-	for (int i = 0; i < MAXSIZE_X; i++)
-	{
-		for (int j = 0; j < MAXSIZE_Y; j++)
-		{
-			if (m_actor[i][j] != 0 && !m_actor[i][j]->isAlive())
-			{
-				m_actor[i][j]->setVisible(false); //Remove all dead actors
-			}
-			else
-			{
-				continue;
-			}
-		}
-	}
 }
 
 void StudentWorld::cleanUp()

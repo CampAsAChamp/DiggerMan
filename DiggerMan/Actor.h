@@ -131,10 +131,22 @@ private:
 
 class Protester : public Actor
 {
+public:
+	Protester(StudentWorld * world, int startX, int startY)
+		:Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+	{
+		setVisible(true);
+		setHitpoints(5);
+	}
+
+	void doSomething();
+
+private:
+	int tickToWaitBetweenMoves = max(0, (3 - (1 / 4)));
 
 };
 
-class HardcoreProtestor : public Protester
+class HardcoreProtester : public Protester
 {};
 
 #endif // ACTOR_H_
