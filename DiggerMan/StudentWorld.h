@@ -26,6 +26,8 @@ const int MAX_BOULDER_Y = 38;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
+class DiggerMan; //FORWARD DECLARATION
+
 class StudentWorld : public GameWorld
 {
 public:
@@ -39,15 +41,22 @@ public:
     virtual void cleanUp();
 
 	void removeDeadActors();
+
     void deleteDirt(int xPassed, int yPassed); 
     //bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
+      bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
 	void setDiggermanHP(int hitPoints);
 	bool ItemDoesNotExist(int itemX, int itemY);
+      void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
-   
+    inline DiggerMan* getDiggerMan()
+    {
+        return m_diggerman;
+    }   
+
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];

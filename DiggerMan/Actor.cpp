@@ -11,72 +11,77 @@ void Actor::doSomething()
 
 void DiggerMan::doSomething()
 {
-	//cout << "X: " << getX() << "| Y: " << getY() << endl;
-	StudentWorld* world = getWorld();
+    //cout << "X: " << getX() << "| Y: " << getY() << endl;
+    StudentWorld* world = getWorld();
+    cout << "DIRECTION: " << getDirection() << endl;
 
-	int numValue = 0;
+    int numValue = 0;
 
-	//////////MOVE HANDLER//////////
-	if (world->getKey(numValue))
-	{
-		if (numValue == KEY_PRESS_LEFT)
-		{
-			if (getDirection() != left)
-			{
-				setDirection(left);
-			}
+    //////////MOVE HANDLER//////////
+    if (world->getKey(numValue))
+    {
+        if (numValue == KEY_PRESS_LEFT)
+        {
+            if (getDirection() != left)
+            {
+                setDirection(left);
+            }
 
-			else if (getX() >= 1 && getDirection() == left)
-			{
-				moveTo(getX() - 1, getY());
-				world->deleteDirt(getX(), getY());
-				setDirection(left);
-			}
-		}
-		if (numValue == KEY_PRESS_UP)
-		{
-			if (getDirection() != up)
-			{
-				setDirection(up);
-			}
+            else if (getX() >= 1 && getDirection() == left)
+            {
+                moveTo(getX() - 1, getY());
+                world->deleteDirt(getX(), getY());
+                setDirection(left);
+            }
+        }
+        if (numValue == KEY_PRESS_UP)
+        {
+            if (getDirection() != up)
+            {
+                setDirection(up);
+            }
 
-			else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
-			{
-				moveTo(getX(), getY() + 1);
-				world->deleteDirt(getX(), getY());
-				setDirection(up);
-			}
-		}
-		if (numValue == KEY_PRESS_RIGHT)
-		{
-			if (getDirection() != right)
-			{
-				setDirection(right);
-			}
+            else if (getY() <= MAXSIZE_Y - 5 && getDirection() == up)
+            {
+                moveTo(getX(), getY() + 1);
+                world->deleteDirt(getX(), getY());
+                setDirection(up);
+            }
+        }
+        if (numValue == KEY_PRESS_RIGHT)
+        {
+            if (getDirection() != right)
+            {
+                setDirection(right);
+            }
 
-			else if (getX() <= MAXSIZE_X - 5 && getDirection() == right)
-			{
-				moveTo(getX() + 1, getY());
-				world->deleteDirt(getX(), getY());
-				setDirection(right);
-			}
-		}
-		if (numValue == KEY_PRESS_DOWN)
-		{
-			if (getDirection() != down)
-			{
-				setDirection(down);
-			}
+            else if (getX() <= MAXSIZE_X - 5 && getDirection() == right)
+            {
+                moveTo(getX() + 1, getY());
+                world->deleteDirt(getX(), getY());
+                setDirection(right);
+            }
+        }
+        if (numValue == KEY_PRESS_DOWN)
+        {
+            if (getDirection() != down)
+            {
+                setDirection(down);
+            }
 
-			else if (getY() >= 1 && getDirection() == down)
-			{
-				moveTo(getX(), getY() - 1);
-				world->deleteDirt(getX(), getY());
-				setDirection(down);
-			}
-
-		}
-	}
+            else if (getY() >= 1 && getDirection() == down)
+            {
+                moveTo(getX(), getY() - 1);
+                world->deleteDirt(getX(), getY());
+                setDirection(down);
+            }
+        }
+        if (numValue == KEY_PRESS_SPACE)
+        {
+            world->squirt(getX(), getY(), getDirection());
+            world->playSound(SOUND_PLAYER_SQUIRT);
+        }
+    }
 }
 
 bool Boulder::isStable()
@@ -158,14 +163,85 @@ void Boulder::doSomething()
 	}
 }
 
+//PROTESTER //IMPLEMENT NEXT
 void Protester::doSomething()
 {
-	if (!isAlive())
-		return;
-	
-	//If in rest then do nothing
+    
+    
+    StudentWorld* world = getWorld();
+    int ticksToWaitBetweenMoves = max(0, (3 - (1/4)));
+    
+    
+}
 
-	//If in leave the oil field state then try and exit the oil field
+//SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
+void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
+{
+    StudentWorld* world = getWorld();
+    DiggerMan* diggerMan = world->getDiggerMan();
 
+    
+    cout << "Water: " << diggerMan->getWater() << endl;
+    
+    if (distanceTraveled == 3)
+    {
+        setHitpoints(0);
+    }
+    
+    switch(getDirection())
+    {
+        case up:
+            if (world->checkDirt(getX(), getY() + 1) == false)
+            {
+                moveTo(getX(), getY() + 1);
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+        case down:
+            if (world->checkDirt(getX(), getY() - 1) == false)
+            {
+                moveTo(getX(), getY() - 1);
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+        case left:
+            if (world->checkDirt(getX() - 1, getY()) == false)
+            {
+                moveTo(getX() - 1, getY());
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+            
+        case right: 
+            if (world->checkDirt(getX() + 1, getY()) == false)
+            {
+                moveTo(getX() + 1, getY());
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+            
+        default: setHitpoints(0);
+            return;
+    }
 
 }
