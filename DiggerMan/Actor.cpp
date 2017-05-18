@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Actor.h"
 #include "StudentWorld.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -136,7 +137,7 @@ void Boulder::doSomething()
 			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
 		}
 
-		else if (getWorld()->checkBoulderBelow(getX(),getY())) 
+		else if (getWorld()->checkBoulderBelow(getX(), getY()))
 		{
 			m_state = stable;
 			setHitpoints(0);
@@ -155,4 +156,16 @@ void Boulder::doSomething()
 			moveTo(getX(), (getY() - 1)); //If there isn't any dirt below it and not at the bottom, then keep falling
 		}
 	}
+}
+
+void Protester::doSomething()
+{
+	if (!isAlive())
+		return;
+	
+	//If in rest then do nothing
+
+	//If in leave the oil field state then try and exit the oil field
+
+
 }
