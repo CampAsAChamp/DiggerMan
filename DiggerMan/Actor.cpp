@@ -12,6 +12,7 @@ void DiggerMan::doSomething()
 {
     //cout << "X: " << getX() << "| Y: " << getY() << endl;
     StudentWorld* world = getWorld();
+    cout << "DIRECTION: " << getDirection() << endl;
 
     int numValue = 0;
 
@@ -73,7 +74,11 @@ void DiggerMan::doSomething()
                 world->deleteDirt(getX(), getY());
                 setDirection(down);
             }
-
+        }
+        if (numValue == KEY_PRESS_SPACE)
+        {
+            world->squirt(getX(), getY(), getDirection());
+            world->playSound(SOUND_PLAYER_SQUIRT);
         }
     }
 }
@@ -150,4 +155,86 @@ void Boulder::doSomething()
 
 
     }
+}
+//PROTESTER //IMPLEMENT NEXT
+void Protester::doSomething()
+{
+    
+    
+    StudentWorld* world = getWorld();
+    int ticksToWaitBetweenMoves = max(0, (3 - (1/4)));
+    
+    
+}
+
+//SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
+void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
+{
+    StudentWorld* world = getWorld();
+    DiggerMan* diggerMan = world->getDiggerMan();
+
+    
+    cout << "Water: " << diggerMan->getWater() << endl;
+    
+    if (distanceTraveled == 3)
+    {
+        setHitpoints(0);
+    }
+    
+    switch(getDirection())
+    {
+        case up:
+            if (world->checkDirt(getX(), getY() + 1) == false)
+            {
+                moveTo(getX(), getY() + 1);
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+        case down:
+            if (world->checkDirt(getX(), getY() - 1) == false)
+            {
+                moveTo(getX(), getY() - 1);
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+        case left:
+            if (world->checkDirt(getX() - 1, getY()) == false)
+            {
+                moveTo(getX() - 1, getY());
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+            
+        case right: 
+            if (world->checkDirt(getX() + 1, getY()) == false)
+            {
+                moveTo(getX() + 1, getY());
+                distanceTraveled++;
+            }
+            else
+            {
+                setHitpoints(0);
+            }
+            
+            return;
+            
+        default: setHitpoints(0);
+            return;
+    }
+
 }

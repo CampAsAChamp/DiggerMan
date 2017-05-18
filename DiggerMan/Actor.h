@@ -55,9 +55,29 @@ public:
         : Actor(world, IMID_PLAYER, DM_START_X, DM_START_Y)
     {
         setVisible(true);
+        m_water = 5;
     }
 
     virtual void doSomething();
+    
+    inline int getWater()
+    
+    {
+        return m_water;
+    }
+    inline void setWater(int water)
+    {
+        m_water = water;
+    }
+    inline void reduceWater()
+    {
+        m_water--;
+    }
+    
+    inline DiggerMan* getDiggerMan()
+    {
+        return this;
+    }
 
     virtual StudentWorld* getWorld()
     {
@@ -71,7 +91,24 @@ private:
 };
 
 class Squirt : public Actor
-{};
+{
+public:
+    
+    Squirt(StudentWorld* world, int startX, int startY, Direction dir)
+    : Actor(world, IMID_WATER_SPURT, startX, startY, dir, 1.0, 1)
+    {
+        setVisible(true);
+        distanceTraveled = 0;
+    }
+    
+    virtual void doSomething();
+    
+private:
+    
+    int distanceTraveled;
+    
+    
+};
 
 class Dirt : public Actor
 {
@@ -131,7 +168,15 @@ private:
 
 class Protester : public Actor
 {
-
+public:
+    Protester(StudentWorld* world, int startX, int startY)
+        :Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+    {
+        setVisible(true);
+        setHitpoints(5);
+    }
+    
+    void doSomething();
 };
 
 class HardcoreProtestor : public Protester

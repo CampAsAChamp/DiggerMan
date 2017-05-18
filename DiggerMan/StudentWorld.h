@@ -20,6 +20,8 @@ const int MINESHAFT_BOTTOM = 4;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
+class DiggerMan; //FORWARD DECLARATION
+
 class StudentWorld : public GameWorld
 {
 public:
@@ -33,10 +35,18 @@ public:
     virtual void cleanUp();
 
 	void removeDeadActors();
-    void deleteDirt(int xPassed, int yPassed); 
+    void deleteDirt(int xPassed, int yPassed);
+    void squirt(int xPassed, int yPassed, Actor::Direction dir);
     bool checkActorBelow(int xPassed, int yPassed, int IMID);
     bool checkDirtBelow(int xPassed, int yPassed);
+    bool checkDirt(int xPassed, int yPassed);
+    inline DiggerMan* getDiggerMan()
+    {
+        return m_diggerman;
+    }
+    
    
+
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
