@@ -20,6 +20,19 @@ void StudentWorld::setGameText()
 
 int StudentWorld::init()
 {
+	srand(time(NULL));
+	int randX = rand() % MAXSIZE_X;
+	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+	int boulderAtLVL = 3;
+
+	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+	{
+		for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+		{
+			m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+		}
+	}
+
 	for (int x = 0; x < MAXSIZE_X; x++) //VERTICAL AXIS (X-Axis)
 	{
 		for (int y = 0; y < (MAXSIZE_Y); y++) //HORIZONTAL AXIS (Y-Axis)
@@ -41,22 +54,48 @@ int StudentWorld::init()
 		}
 	}
 
-	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+	for (int i = 0; i < boulderAtLVL; i++)
 	{
-		for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY))
 		{
-			m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+			m_actor[randX][randY] = new Boulder(this, randX, randY);
+			deleteDirt(randX, randY);
+			randX = rand() % MAXSIZE_X;
+			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+		}
+		else
+		{
+			randX = rand() % MAXSIZE_X;
+			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+			i--;
 		}
 	}
-
-	m_actor[25][55] = new Boulder(this, 25, 55); //Testing to see if I can spawn a boulder
-	m_actor[25][45] = new Boulder(this, 25, 45); //Testing to see if I can spawn a second boulder
-	deleteDirt(25, 55);//Temporary so boulders don't spawn on top of dirt
-	deleteDirt(25, 45);//Temporary so boulders don't spawn on top of dirt
 
 	m_diggerman = new DiggerMan(this);
 
 	return GWSTATUS_CONTINUE_GAME;
+}
+bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
+{
+	bool objectExist = false;
+
+	for (int x = itemX; x < (itemX + 4); x++)
+	{
+		for (int y = itemY; y < (itemY + 4); y++)
+		{
+			if (m_dirt[x][y]->isVisible())
+			{
+				objectExist = true;
+				break;
+			}
+			else
+			{
+				objectExist = false;
+				return objectExist;
+			}
+		}
+	}
+	return objectExist;
 }
 
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
