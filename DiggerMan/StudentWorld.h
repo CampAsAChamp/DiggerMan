@@ -17,6 +17,12 @@ const int MAXSIZE_Y = 64;
 const int MINESHAFT_START_LEFT = 29;
 const int MINESHAFT_STOP_RIGHT = 34;
 const int MINESHAFT_BOTTOM = 4;
+const int OBJECT_EXIST = 1;
+const int BOULDER_EXIST = 2;
+const int Y_OFFSET = 20;
+const int Y_BOUND_TOP = 8;
+const int X_BOUND_RIGHT = 4;
+const int MAX_BOULDER_Y = 38;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
@@ -35,17 +41,21 @@ public:
     virtual void cleanUp();
 
 	void removeDeadActors();
-    void deleteDirt(int xPassed, int yPassed);
-    void squirt(int xPassed, int yPassed, Actor::Direction dir);
-    bool checkActorBelow(int xPassed, int yPassed, int IMID);
+
+    void deleteDirt(int xPassed, int yPassed); 
+    //bool checkActorBelow(int xPassed, int yPassed, int IMID);
+	bool checkBoulderBelow(int xPassed, int yPassed);
+	bool checkDiggermanBelow(int xPassed, int yPassed);
+      bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
-    bool checkDirt(int xPassed, int yPassed);
+	void setDiggermanHP(int hitPoints);
+	bool ItemDoesNotExist(int itemX, int itemY);
+      void squirt(int xPassed, int yPassed, Actor::Direction dir);
+
     inline DiggerMan* getDiggerMan()
     {
         return m_diggerman;
-    }
-    
-   
+    }   
 
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];

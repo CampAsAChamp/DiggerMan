@@ -22,6 +22,19 @@ void StudentWorld::setGameText()
 
 int StudentWorld::init()
 {
+	srand(time(NULL));
+	int randX = rand() % MAXSIZE_X;
+	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+	int boulderAtLVL = 3;
+
+	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+	{
+		for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+		{
+			m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+		}
+	}
+
 	for (int x = 0; x < MAXSIZE_X; x++) //VERTICAL AXIS (X-Axis)
 	{
 		for (int y = 0; y < (MAXSIZE_Y); y++) //HORIZONTAL AXIS (Y-Axis)
@@ -43,23 +56,48 @@ int StudentWorld::init()
 		}
 	}
 
-	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+	for (int i = 0; i < boulderAtLVL; i++)
 	{
-		for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY))
 		{
-			m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+			m_actor[randX][randY] = new Boulder(this, randX, randY);
+			deleteDirt(randX, randY);
+			randX = rand() % MAXSIZE_X;
+			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+		}
+		else
+		{
+			randX = rand() % MAXSIZE_X;
+			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+			i--;
 		}
 	}
-
-	m_actor[25][55] = new Boulder(this, 25, 55); //Testing to see if I can spawn a boulder
-	m_actor[25][45] = new Boulder(this, 25, 45); //Testing to see if I can spawn a second boulder
-    m_actor[30][20] = new Protester(this, 30,20);
-	deleteDirt(25, 55);//Temporary so boulders don't spawn on top of dirt
-	deleteDirt(25, 45);//Temporary so boulders don't spawn on top of dirt
-
+  
 	m_diggerman = new DiggerMan(this);
 
 	return GWSTATUS_CONTINUE_GAME;
+}
+bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
+{
+	bool objectExist = false;
+
+	for (int x = itemX; x < (itemX + 4); x++)
+	{
+		for (int y = itemY; y < (itemY + 4); y++)
+		{
+			if (m_dirt[x][y]->isVisible())
+			{
+				objectExist = true;
+				break;
+			}
+			else
+			{
+				objectExist = false;
+				return objectExist;
+			}
+		}
+	}
+	return objectExist;
 }
 
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
@@ -132,58 +170,44 @@ bool StudentWorld::checkDirt(int xPassed, int yPassed)
 }
 
 
-bool StudentWorld::checkActorBelow(int xPassed, int yPassed, int IMID)
+bool StudentWorld::checkBoulderBelow(int xPassed, int yPassed)
 {
-	bool found = true;
+	bool boulderFound = false;
 
 	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
 	{
-		if (IMID == IMID_DIRT)
+		if (m_actor[xToCheck][yPassed - 4] != 0)
 		{
-			return checkDirtBelow(xPassed, yPassed); //Has to call different function as the array to check is different
-		}
-		else if (m_actor[xToCheck][yPassed - 1] != 0)
-		{
-			if (m_actor[xToCheck][yPassed - 1]->getID() == IMID && m_actor[xToCheck][yPassed - 1]->isVisible())
+			if (m_actor[xToCheck][yPassed - 4]->isVisible())
 			{
-				found = true;
-				break;
-			}
-			else
-			{
-				found = false;
+				boulderFound = true;
+				return true;
 			}
 		}
 		else
+		{
 			continue;
+		}
 	}
-	return found;
+	return false;
 }
-int StudentWorld::move()
+
+bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
 {
-	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
-	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
+	if ((yPassed - 4) == m_diggerman->getY() && xPassed == m_diggerman->getX())
+		return true;
+	else
+		return false;
+	
+}
 
 	StudentWorld::setGameText();
 	m_diggerman->doSomething(); //Diggerman doSomething
     
-
-	for (int i = 0; i < MAXSIZE_X; i++)
-	{
-		for (int j = 0; j < MAXSIZE_Y; j++)
-		{
-			if (m_actor[i][j] != 0)
-			{
-				m_actor[i][j]->doSomething(); //Call doSomething for all actors
-			}
-			else
-			{
-				continue;
-			}
-		}
-	}
-	removeDeadActors(); //Checks every tick to remove the actors that are dead
-	return GWSTATUS_CONTINUE_GAME;
+void StudentWorld::setDiggermanHP(int hitPoints)
+{
+	m_diggerman->setHitpoints(hitPoints);
+	cout << "\tDiggerman is dead\n";
 }
 
 void StudentWorld::removeDeadActors()
@@ -194,9 +218,10 @@ void StudentWorld::removeDeadActors()
 		{
 			if (m_actor[i][j] != 0 && !m_actor[i][j]->isAlive())
 			{
-				m_actor[i][j]->setVisible(false); //Remove all dead actors
-                m_actor[i][j] = 0;
-                delete m_actor[i][j];
+				m_actor[i][j]->setVisible(false);
+				m_actor[i][j] = 0;
+				cout << "\tDeleted actor at " << i << " | " << j << endl;
+				delete m_actor[i][j];
 			}
 			else
 			{
@@ -204,6 +229,41 @@ void StudentWorld::removeDeadActors()
 			}
 		}
 	}
+	if (!m_diggerman->isAlive())
+	{
+		m_diggerman->setVisible(false);
+		//m_diggerman = 0;
+		cout << "\tDeleted DiggerMan at " << m_diggerman->getX() << " | " << m_diggerman->getY() << endl;
+		//delete m_diggerman;
+	}
+}
+
+int StudentWorld::move()
+{
+	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
+	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
+
+	StudentWorld::setGameText();
+	m_diggerman->doSomething(); //Diggerman doSomething
+
+	for (int i = 0; i < MAXSIZE_X; i++)
+	{
+		for (int j = 0; j < MAXSIZE_Y; j++)
+		{
+			if (m_actor[i][j] != 0)
+			{
+
+
+				m_actor[i][j]->doSomething(); //Call doSomething for all actors
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+	removeDeadActors(); //Checks every tick to remove the actors that are dead
+	return GWSTATUS_CONTINUE_GAME;
 }
 
 void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
