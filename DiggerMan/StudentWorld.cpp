@@ -77,6 +77,7 @@ int StudentWorld::init()
 
 	return GWSTATUS_CONTINUE_GAME;
 }
+
 bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 {
 	bool objectExist = false;
@@ -146,7 +147,8 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 	}
 	return dirtFound;
 }
-bool StudentWorld::checkDirt(int xPassed, int yPassed)
+
+bool StudentWorld::checkDirtOrActor(int xPassed, int yPassed)
 {
     bool dirtFound = true;
     
@@ -168,7 +170,6 @@ bool StudentWorld::checkDirt(int xPassed, int yPassed)
     
     return dirtFound;
 }
-
 
 bool StudentWorld::checkBoulderBelow(int xPassed, int yPassed)
 {
@@ -198,11 +199,41 @@ bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
 		return true;
 	else
 		return false;
-	
 }
 
-	StudentWorld::setGameText();
-	m_diggerman->doSomething(); //Diggerman doSomething
+bool StudentWorld::checkDiggerman(int xPassed, int yPassed)
+{
+	//Check Above
+	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+	{
+		if (yPassed + 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
+			return true;
+	}
+
+	//Check Below
+	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+	{
+		if (yPassed - 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
+			return true;
+	}
+
+	//Check Left
+	for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
+	{
+		if (yPassed == m_diggerman->getY() && xPassed-4 == m_diggerman->getX())
+			return true;
+	}
+
+	//Check Right
+	for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
+	{
+		if (yPassed == m_diggerman->getY() && xPassed + 4 == m_diggerman->getX())
+			return true;
+	}
+
+	return false;
+	
+}
     
 void StudentWorld::setDiggermanHP(int hitPoints)
 {
@@ -320,8 +351,6 @@ void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
         return;
     }
 }
-
-
 
 void StudentWorld::cleanUp()
 {}

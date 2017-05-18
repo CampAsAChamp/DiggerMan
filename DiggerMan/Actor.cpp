@@ -13,7 +13,6 @@ void DiggerMan::doSomething()
 {
     //cout << "X: " << getX() << "| Y: " << getY() << endl;
     StudentWorld* world = getWorld();
-    cout << "DIRECTION: " << getDirection() << endl;
 
     int numValue = 0;
 
@@ -78,67 +77,53 @@ void DiggerMan::doSomething()
         }
         if (numValue == KEY_PRESS_SPACE)
         {
+			world->playSound(SOUND_PLAYER_SQUIRT);
             world->squirt(getX(), getY(), getDirection());
-            world->playSound(SOUND_PLAYER_SQUIRT);
         }
     }
 }
 
 bool Boulder::isStable()
 {
-	StudentWorld* world = getWorld();
-	return world->checkDirtBelow(getX(), getY());
+	return getWorld()->checkDirtBelow(getX(), getY());
 }
 
 void Boulder::doSomething()
 {
 	if (!isAlive())
-	{
-		cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
 		return;
-	}
 
 	if (m_state != waiting && m_state != falling) //If boulder is in normal state
 	{
 		if (isStable())
 		{
 			m_state = stable;
-			cout << "\tBoulder at " << getX() << "|" << getY() << " is stable\n";
 		}
 		else
 		{
 			m_state = waiting;
-			cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting\n";
 		}
-		cout << "-----------------------------------------\n";
 	}
 	else if (waitTime < 30 && m_state == waiting)
 	{
 		waitTime++;
-		cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting for " << waitTime << " ticks\n";
 		return;
 	}
 	else if (waitTime >= 30 && m_state == waiting)
 	{
 		waitTime = 0;
 		m_state = falling;
-		cout << "\tBoulder at " << getX() << "|" << getY() << " is moving to a falling state\n";
 		getWorld()->playSound(SOUND_FALLING_ROCK);
 
 	}
 	else if (m_state == falling)
 	{
-		//Move down one square each tick until it hits the bottom of the field
-		//Runs on top of another boulder
-		//Runs into dirt (By moving down a square the boulder would overlap
-		//Then must set state to dead so it can be removed from game
-		cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
+	
 
 		if (getWorld()->checkDirtBelow(getX(), getY()) || getY() < 1)
 		{
 			m_state = stable;
 			setHitpoints(0);
-			cout << "\tBoulder at " << getX() << "|" << getY() << " is dead at the bottom\n";
 			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
 		}
 
@@ -146,7 +131,6 @@ void Boulder::doSomething()
 		{
 			m_state = stable;
 			setHitpoints(0);
-			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
 		}
 
 		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
@@ -163,24 +147,11 @@ void Boulder::doSomething()
 	}
 }
 
-//PROTESTER //IMPLEMENT NEXT
-void Protester::doSomething()
-{
-    
-    
-    StudentWorld* world = getWorld();
-    int ticksToWaitBetweenMoves = max(0, (3 - (1/4)));
-    
-    
-}
-
-//SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
 void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
 {
     StudentWorld* world = getWorld();
     DiggerMan* diggerMan = world->getDiggerMan();
-
-    
+	    
     cout << "Water: " << diggerMan->getWater() << endl;
     
     if (distanceTraveled == 3)
@@ -191,7 +162,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
     switch(getDirection())
     {
         case up:
-            if (world->checkDirt(getX(), getY() + 1) == false)
+            if (world->checkDirtOrActor(getX(), getY() + 1) == false)
             {
                 moveTo(getX(), getY() + 1);
                 distanceTraveled++;
@@ -203,7 +174,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             
             return;
         case down:
-            if (world->checkDirt(getX(), getY() - 1) == false)
+            if (world->checkDirtOrActor(getX(), getY() - 1) == false)
             {
                 moveTo(getX(), getY() - 1);
                 distanceTraveled++;
@@ -215,7 +186,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             
             return;
         case left:
-            if (world->checkDirt(getX() - 1, getY()) == false)
+            if (world->checkDirtOrActor(getX() - 1, getY()) == false)
             {
                 moveTo(getX() - 1, getY());
                 distanceTraveled++;
@@ -228,7 +199,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             return;
             
         case right: 
-            if (world->checkDirt(getX() + 1, getY()) == false)
+            if (world->checkDirtOrActor(getX() + 1, getY()) == false)
             {
                 moveTo(getX() + 1, getY());
                 distanceTraveled++;
@@ -245,3 +216,22 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
     }
 
 }
+
+void Protester::doSomething()
+{
+	StudentWorld* world = getWorld();
+	if (!isAlive())
+		return;
+
+	if (waitingTime < tickToWaitBetweenMoves)
+	{
+		waitingTime++;
+	}
+
+	else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY())) //Check if 4 units away from DiggerMan
+	{
+		getWorld()->playSound(SOUND_PROTESTER_YELL);
+	}
+	//else check if its 4 away from diggerMan
+}
+
