@@ -73,13 +73,15 @@ int StudentWorld::init()
 		}
 	}
   
+    
 	m_diggerman = new DiggerMan(this);
 
 	return GWSTATUS_CONTINUE_GAME;
 }
 bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 {
-	bool objectExist = false;
+    
+	bool objectDoesNotExist = false;
 
 	for (int x = itemX; x < (itemX + 4); x++)
 	{
@@ -87,17 +89,16 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 		{
 			if (m_dirt[x][y]->isVisible())
 			{
-				objectExist = true;
-				break;
+				objectDoesNotExist = true;
 			}
 			else
 			{
-				objectExist = false;
-				return objectExist;
+				objectDoesNotExist = false;
+                return objectDoesNotExist;
 			}
 		}
 	}
-	return objectExist;
+	return objectDoesNotExist;
 }
 
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
@@ -201,8 +202,6 @@ bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
 	
 }
 
-	StudentWorld::setGameText();
-	m_diggerman->doSomething(); //Diggerman doSomething
     
 void StudentWorld::setDiggermanHP(int hitPoints)
 {
@@ -240,11 +239,29 @@ void StudentWorld::removeDeadActors()
 
 int StudentWorld::move()
 {
+    ticks++;
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
 	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
 
 	StudentWorld::setGameText();
 	m_diggerman->doSomething(); //Diggerman doSomething
+    
+    //WILL REPLACE '1' LATER WITH CURRENT_LEVEL_NUM
+    int G = 1 * 25 + 300; //1 in G CHANCE THAT A WATERPOOL WILL SPAWN BASED ON TICKS
+    
+    if (ticks%G == 0) //IF TICKS PASSED IS G CHANCE THEN SPAWN WATERPOOL
+    {
+        int x = rand()%MAXSIZE_X;
+        int y = rand()%MAXSIZE_Y;
+        
+        m_actor[x][y] = new WaterPool(this, x, y);
+    }
+    
+    bool itemFound = checkDirt(m_diggerman->getX(), m_diggerman->getY());
+    if (itemFound)
+    {
+        cout << "THERE IS AN ITEM FOUND ON DIGGERMAN's POSITION" << endl;
+    }
 
 	for (int i = 0; i < MAXSIZE_X; i++)
 	{
@@ -263,11 +280,24 @@ int StudentWorld::move()
 		}
 	}
 	removeDeadActors(); //Checks every tick to remove the actors that are dead
+    
+    if (!m_diggerman->isAlive())
+    {
+        cleanUp();
+        return GWSTATUS_PLAYER_DIED;
+    }
 	return GWSTATUS_CONTINUE_GAME;
+    
+    
 }
 
 void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
 {
+    /* if (checkDirt(xPassed, yPassed + 1) == true || checkDirt(xPassed, yPassed - 1) == true || checkDirt(xPassed + 1, yPassed) == true || checkDirt(xPassed - 1, yPassed) == true)
+    {
+        return;
+    } */ 
+    
     cout << "Water: " << m_diggerman->getWater() << endl;
     
     if (xPassed > -1 && xPassed < MAXSIZE_X && yPassed > -1 && yPassed < MAXSIZE_Y)

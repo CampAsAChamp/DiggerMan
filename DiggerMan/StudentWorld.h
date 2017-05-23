@@ -33,7 +33,9 @@ class StudentWorld : public GameWorld
 public:
     StudentWorld(std::string assetDir)
         : GameWorld(assetDir)
-    {}
+    {
+        ticks = 0;
+    }
 
     void setGameText();
     virtual int init();
@@ -61,6 +63,7 @@ private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
+    int ticks;
 };
 
 #endif // STUDENTWORLD_H_
