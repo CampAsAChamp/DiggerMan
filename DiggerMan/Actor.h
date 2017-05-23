@@ -60,6 +60,7 @@ public:
 
     virtual void doSomething();
     
+    
     inline int getWater()
     
     {
@@ -163,6 +164,7 @@ public:
     void doSomething();
     bool isStable();
     BoulderState getState()
+    
     {
         return m_state;
     }
