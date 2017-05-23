@@ -1,6 +1,7 @@
 #include "StudentWorld.h"
 #include <string>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -14,14 +15,21 @@ GameWorld* createStudentWorld(string assetDir)
 
 void StudentWorld::setGameText()
 {
-	string text;
-	text = "Edit this stuff later";
+    //Lvl: 52 Lives: 3 Hlth: 80% Wtr: 20 Gld: 3 Sonar: 1 Oil Left: 2 Scr: 321000
 
+	ostringstream oss;
+    oss << "Levl: " << m_level <<  " Lives: " << m_lives << " Health: " << "Water: " << m_diggerman->getWater() << " Gold: " << "Sonar: " << "Oil Left: " << "Score: " << getScore() << endl;
+
+    string text = oss.str();
+    
 	GameWorld::setGameStatText(text);
 }
 
 int StudentWorld::init()
 {
+    if (m_lives == 3)
+    {
+    m_diggerman = new DiggerMan(this);
 	srand(time(NULL));
 	int randX = rand() % MAXSIZE_X;
 	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
@@ -74,7 +82,7 @@ int StudentWorld::init()
 	}
   
     
-	m_diggerman = new DiggerMan(this);
+    }
 
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -239,6 +247,11 @@ void StudentWorld::removeDeadActors()
 
 int StudentWorld::move()
 {
+    if (m_lives == 0)
+    {
+        exit(0);
+    }
+    
     ticks++;
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
 	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
@@ -283,12 +296,14 @@ int StudentWorld::move()
     
     if (!m_diggerman->isAlive())
     {
-        cleanUp();
+        m_lives--;
+        m_diggerman->setHitpoints(1);
+        m_diggerman->setVisible(true);
+        
         return GWSTATUS_PLAYER_DIED;
     }
+
 	return GWSTATUS_CONTINUE_GAME;
-    
-    
 }
 
 void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)

@@ -190,6 +190,8 @@ void WaterPool::doSomething()
         setHitpoints(0);
         world->playSound(SOUND_GOT_GOODIE);
         diggerMan->addWater(5);
+        world->increaseScore(100);
+        
     }
 }
 

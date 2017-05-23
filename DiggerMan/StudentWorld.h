@@ -35,6 +35,8 @@ public:
         : GameWorld(assetDir)
     {
         ticks = 0;
+        m_level = 1;
+        m_lives = 3;
     }
 
     void setGameText();
@@ -64,6 +66,8 @@ private:
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
     int ticks;
+    int m_level;
+    int m_lives;
 };
 
 #endif // STUDENTWORLD_H_
