@@ -16,6 +16,12 @@ void DiggerMan::doSomething()
     cout << "DIRECTION: " << getDirection() << endl;
 
     int numValue = 0;
+    
+    if (waitTime < 3)
+    {
+        waitTime++;
+        return;
+    }
 
     //////////MOVE HANDLER//////////
     if (world->getKey(numValue))
@@ -76,10 +82,14 @@ void DiggerMan::doSomething()
                 setDirection(down);
             }
         }
-        if (numValue == KEY_PRESS_SPACE)
+        if (waitTime == 3)
         {
-            world->squirt(getX(), getY(), getDirection());
-            world->playSound(SOUND_PLAYER_SQUIRT);
+            if (numValue == KEY_PRESS_SPACE)
+            {
+                world->squirt(getX(), getY(), getDirection());
+                world->playSound(SOUND_PLAYER_SQUIRT);
+                waitTime = 0;
+            }
         }
     }
 }
@@ -163,6 +173,26 @@ void Boulder::doSomething()
 	}
 }
 
+void WaterPool::doSomething()
+{
+    StudentWorld* world = getWorld();
+    DiggerMan* diggerMan = world->getDiggerMan();
+    
+
+    
+    cout << "DIGGERMAN W LOC: " << diggerMan->getX() << endl;
+    cout << "DIGGERMAN W LOC: " << diggerMan->getY() << endl;
+    cout << "WATERPOOL LOC: " << getX() << endl;
+    cout << "WATERPOOL LOC: " << getY() << endl;
+    
+    if (diggerMan->getX() == getX() && diggerMan->getY() == getY())
+    {
+        setHitpoints(0);
+        world->playSound(SOUND_GOT_GOODIE);
+        diggerMan->addWater(5);
+    }
+}
+
 //PROTESTER //IMPLEMENT NEXT
 void Protester::doSomething()
 {
@@ -177,11 +207,17 @@ void Protester::doSomething()
 //SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
 void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
 {
+    if (!isAlive())
+    {
+        return;
+    }
+    
     StudentWorld* world = getWorld();
     DiggerMan* diggerMan = world->getDiggerMan();
 
     
     cout << "Water: " << diggerMan->getWater() << endl;
+    
     
     if (distanceTraveled == 3)
     {

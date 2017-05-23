@@ -69,6 +69,10 @@ public:
     {
         m_water = water;
     }
+    inline void addWater(int water)
+    {
+        m_water+=water;
+    }
     inline void reduceWater()
     {
         m_water--;
@@ -88,6 +92,7 @@ private:
     int m_water;
     int m_sonarCharges;
     int m_goldNuggets;
+    unsigned int waitTime = 0;
 };
 
 class Squirt : public Actor
@@ -106,6 +111,7 @@ public:
 private:
     
     int distanceTraveled;
+    unsigned int waitTime = 0;
     
     
 };
@@ -180,8 +186,21 @@ public:
 	void doSomething();
 
 private:
-	int tickToWaitBetweenMoves = max(0, (3 - (1 / 4)));
+	//int tickToWaitBetweenMoves = max(0, (3 - (1 / 4)));
 
+};
+
+class WaterPool: public Actor
+{
+public:
+    WaterPool(StudentWorld* world, int startX, int startY)
+        :Actor(world, IMID_WATER_POOL, startX, startY, right, 1.0, 2)
+    {
+        setVisible(true);
+        
+    }
+    
+    virtual void doSomething();
 };
 
 class HardcoreProtester : public Protester
