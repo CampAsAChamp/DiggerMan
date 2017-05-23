@@ -23,7 +23,7 @@ int StudentWorld::init()
 	srand(time(NULL));
 	int randX = rand() % MAXSIZE_X;
 	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
-	int boulderAtLVL = 3;
+	int boulderAtLVL = 7;
 
 	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
 	{
@@ -56,9 +56,9 @@ int StudentWorld::init()
 
 	for (int i = 0; i < boulderAtLVL; i++)
 	{
-		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY))
+		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY) && distanceBetweenObjs(randX,randY))
 		{
-			m_actor[randX][randY] = new Boulder(this, randX, randY);
+			my_actors.push_back(new Boulder(this, randX, randY));
 			deleteDirt(randX, randY);
 			randX = rand() % MAXSIZE_X;
 			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
@@ -86,7 +86,6 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 			if (m_dirt[x][y]->isVisible())
 			{
 				objectExist = true;
-				break;
 			}
 			else
 			{
@@ -96,6 +95,23 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 		}
 	}
 	return objectExist;
+}
+bool StudentWorld::distanceBetweenObjs(int randX, int randY)
+{
+	int objX, objY;
+	double distance = 0;
+	for (size_t i = 0; i < my_actors.size(); i++)
+	{
+		objX = my_actors.at(i)->getX();
+		objY = my_actors.at(i)->getY();
+		distance = sqrt(pow((randX-objX),2) + pow((randY-objY), 2));
+
+		if (distance <= 6)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph

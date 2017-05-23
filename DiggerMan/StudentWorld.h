@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
+#include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -43,9 +45,11 @@ public:
     bool checkActorBelow(int xPassed, int yPassed, int IMID);
     bool checkDirtBelow(int xPassed, int yPassed);
 	bool ItemDoesNotExist(int itemX, int itemY);
+	bool distanceBetweenObjs(int x, int y);
    
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
+	std::vector<Actor*> my_actors;
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
 };
