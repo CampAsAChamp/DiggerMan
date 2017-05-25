@@ -32,9 +32,14 @@ class DiggerMan; //FORWARD DECLARATION
 class StudentWorld : public GameWorld
 {
 public:
-	StudentWorld(std::string assetDir)
-		: GameWorld(assetDir)
-	{}
+
+    StudentWorld(std::string assetDir)
+        : GameWorld(assetDir)
+    {
+        ticks = 0;
+        m_level = 1;
+        m_lives = 3;
+    }
 
 	void setGameText();
 	virtual int init();
@@ -58,9 +63,13 @@ public:
 	inline DiggerMan* getDiggerMan() {return m_diggerman;}
 
 private:
-	Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
-	Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
-	DiggerMan* m_diggerman;
+
+    Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
+    Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
+    DiggerMan* m_diggerman;
+    int ticks;
+    int m_level;
+    int m_lives;
 };
 
 #endif // STUDENTWORLD_H_

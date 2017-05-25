@@ -1,6 +1,7 @@
 #include "StudentWorld.h"
 #include <string>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -14,14 +15,21 @@ GameWorld* createStudentWorld(string assetDir)
 
 void StudentWorld::setGameText()
 {
-	string text;
-	text = "Edit this stuff later";
+    //Lvl: 52 Lives: 3 Hlth: 80% Wtr: 20 Gld: 3 Sonar: 1 Oil Left: 2 Scr: 321000
 
+	ostringstream oss;
+    oss << "Levl: " << m_level <<  " Lives: " << m_lives << " Health: " << "Water: " << m_diggerman->getWater() << " Gold: " << "Sonar: " << "Oil Left: " << "Score: " << getScore() << endl;
+
+    string text = oss.str();
+    
 	GameWorld::setGameStatText(text);
 }
 
 int StudentWorld::init()
 {
+    if (m_lives == 3)
+    {
+    m_diggerman = new DiggerMan(this);
 	srand(time(NULL));
 	int randX = rand() % MAXSIZE_X;
 	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
@@ -72,15 +80,16 @@ int StudentWorld::init()
 			i--;
 		}
 	}
-
-	m_diggerman = new DiggerMan(this);
+  
+}
 
 	return GWSTATUS_CONTINUE_GAME;
 }
 
 bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 {
-	bool objectExist = false;
+    
+	bool objectDoesNotExist = false;
 
 	for (int x = itemX; x < (itemX + 4); x++)
 	{
@@ -88,17 +97,16 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 		{
 			if (m_dirt[x][y]->isVisible())
 			{
-				objectExist = true;
-				break;
+				objectDoesNotExist = true;
 			}
 			else
 			{
-				objectExist = false;
-				return objectExist;
+				objectDoesNotExist = false;
+                return objectDoesNotExist;
 			}
 		}
 	}
-	return objectExist;
+	return objectDoesNotExist;
 }
 
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
@@ -302,11 +310,34 @@ void StudentWorld::removeDeadActors()
 
 int StudentWorld::move()
 {
+    if (m_lives == 0)
+    {
+        exit(0);
+    }
+    
+    ticks++;
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
 	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
 
 	StudentWorld::setGameText();
 	m_diggerman->doSomething(); //Diggerman doSomething
+    
+    //WILL REPLACE '1' LATER WITH CURRENT_LEVEL_NUM
+    int G = 1 * 25 + 300; //1 in G CHANCE THAT A WATERPOOL WILL SPAWN BASED ON TICKS
+    
+    if (ticks%G == 0) //IF TICKS PASSED IS G CHANCE THEN SPAWN WATERPOOL
+    {
+        int x = rand()%MAXSIZE_X;
+        int y = rand()%MAXSIZE_Y;
+        
+        m_actor[x][y] = new WaterPool(this, x, y);
+    }
+    
+    bool itemFound = checkDirt(m_diggerman->getX(), m_diggerman->getY());
+    if (itemFound)
+    {
+        cout << "THERE IS AN ITEM FOUND ON DIGGERMAN's POSITION" << endl;
+    }
 
 	for (int i = 0; i < MAXSIZE_X; i++)
 	{
@@ -323,18 +354,79 @@ int StudentWorld::move()
 		}
 	}
 	removeDeadActors(); //Checks every tick to remove the actors that are dead
-	if (!m_diggerman->isAlive())
-	{
-		cleanUp();
-		return GWSTATUS_PLAYER_DIED;
-	}
+
+    
+    if (!m_diggerman->isAlive())
+    {
+        m_lives--;
+        m_diggerman->setHitpoints(1);
+        m_diggerman->setVisible(true);
+        
+        return GWSTATUS_PLAYER_DIED;
+    }
 
 	return GWSTATUS_CONTINUE_GAME;
 }
 
 void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
 {
-	cout << "Water: " << m_diggerman->getWater() << endl;
+    /* if (checkDirt(xPassed, yPassed + 1) == true || checkDirt(xPassed, yPassed - 1) == true || checkDirt(xPassed + 1, yPassed) == true || checkDirt(xPassed - 1, yPassed) == true)
+    {
+        return;
+    } */ 
+    
+    cout << "Water: " << m_diggerman->getWater() << endl;
+    
+    if (xPassed > -1 && xPassed < MAXSIZE_X && yPassed > -1 && yPassed < MAXSIZE_Y)
+    {
+        if (m_diggerman->getWater() > 0)
+        {
+            switch (dir)
+            {
+                case DiggerMan::up :
+                    m_actor[xPassed][yPassed] = new Squirt(this, xPassed, yPassed + 4, DiggerMan::up);
+                    m_actor[xPassed][yPassed]->setDirection(DiggerMan::up);
+                    playSound(SOUND_PLAYER_SQUIRT);
+                    m_diggerman->reduceWater();
+        
+                    return;
+    
+                case DiggerMan::down :
+                    m_actor[xPassed][yPassed] = new Squirt(this, xPassed, yPassed - 4, DiggerMan::down);
+                    m_actor[xPassed][yPassed]->setDirection(DiggerMan::down);
+                    playSound(SOUND_PLAYER_SQUIRT);
+                    m_diggerman->reduceWater();
+                    return;
+        
+                case DiggerMan::right :
+                    m_actor[xPassed][yPassed] = new Squirt(this, xPassed + 4, yPassed, DiggerMan::right);
+                    m_actor[xPassed][yPassed]->setDirection(DiggerMan::right);
+                    playSound(SOUND_PLAYER_SQUIRT);
+                    m_diggerman->reduceWater();
+                    return;
+        
+                case DiggerMan::left :
+                    m_actor[xPassed][yPassed] = new Squirt(this, xPassed - 4, yPassed, DiggerMan::left);
+                    m_actor[xPassed][yPassed]->setDirection(DiggerMan::left);
+                    playSound(SOUND_PLAYER_SQUIRT);
+                    m_diggerman->reduceWater();
+                    return;
+        
+                default:
+                    m_actor[xPassed][yPassed]->setHitpoints(0);
+                    return;
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+}
 
 	if (xPassed > -1 && xPassed < MAXSIZE_X && yPassed > -1 && yPassed < MAXSIZE_Y)
 	{
