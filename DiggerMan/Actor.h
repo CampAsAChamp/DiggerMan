@@ -3,6 +3,8 @@
 
 #include "GraphObject.h"
 #include "GameWorld.h"
+#include <algorithm>
+
 
 const int DM_START_X = 30;
 const int DM_START_Y = 60;
@@ -12,6 +14,11 @@ class StudentWorld; //Forward declaration
 enum BoulderState
 {
     stable, falling, waiting
+};
+
+enum ProtesterState
+{
+	rest, leaveOilField
 };
 
 class Actor : public GraphObject
@@ -55,9 +62,34 @@ public:
         : Actor(world, IMID_PLAYER, DM_START_X, DM_START_Y)
     {
         setVisible(true);
+        m_water = 5;
     }
 
     virtual void doSomething();
+    
+    
+    inline int getWater()
+    
+    {
+        return m_water;
+    }
+    inline void setWater(int water)
+    {
+        m_water = water;
+    }
+    inline void addWater(int water)
+    {
+        m_water+=water;
+    }
+    inline void reduceWater()
+    {
+        m_water--;
+    }
+    
+    inline DiggerMan* getDiggerMan()
+    {
+        return this;
+    }
 
     virtual StudentWorld* getWorld()
     {
@@ -68,10 +100,29 @@ private:
     int m_water;
     int m_sonarCharges;
     int m_goldNuggets;
+    unsigned int waitTime = 0;
 };
 
 class Squirt : public Actor
-{};
+{
+public:
+    
+    Squirt(StudentWorld* world, int startX, int startY, Direction dir)
+    : Actor(world, IMID_WATER_SPURT, startX, startY, dir, 1.0, 1)
+    {
+        setVisible(true);
+        distanceTraveled = 0;
+    }
+    
+    virtual void doSomething();
+    
+private:
+    
+    int distanceTraveled;
+    unsigned int waitTime = 0;
+    
+    
+};
 
 class Dirt : public Actor
 {
@@ -118,8 +169,9 @@ public:
     }
 
     void doSomething();
-    bool isStable();
+	bool isStable();
     BoulderState getState()
+    
     {
         return m_state;
     }
@@ -131,10 +183,40 @@ private:
 
 class Protester : public Actor
 {
+public:
 
+	Protester(StudentWorld * world, int startX, int startY)
+		:Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+	{
+		setVisible(true);
+		setHitpoints(5);
+	}
+
+	void doSomething();
+	ProtesterState getState() { return m_state; }
+
+private:
+	unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+	unsigned int waitingTime = 0;
+	unsigned int nonRestingTicks = 0;
+
+	ProtesterState m_state;
+
+
+class WaterPool: public Actor
+{
+public:
+    WaterPool(StudentWorld* world, int startX, int startY)
+        :Actor(world, IMID_WATER_POOL, startX, startY, right, 1.0, 2)
+    {
+        setVisible(true);
+        
+    }
+    
+    virtual void doSomething();
 };
 
-class HardcoreProtestor : public Protester
+class HardcoreProtester : public Protester
 {};
 
 #endif // ACTOR_H_

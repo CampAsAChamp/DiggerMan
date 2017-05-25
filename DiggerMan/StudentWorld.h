@@ -3,10 +3,11 @@
 
 #include "GameWorld.h"
 #include "GameConstants.h"
+#include "GraphObject.h"
 #include "Actor.h"
 #include <string>
 #include <iostream>
-#include <stdlib.h>     /* srand, rand */
+#include <stdlib.h>     // srand, rand
 #include <time.h>
 #include <cmath>
 #include <vector>
@@ -28,31 +29,52 @@ const int MAX_BOULDER_Y = 38;
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
+class DiggerMan; //FORWARD DECLARATION
+
 class StudentWorld : public GameWorld
 {
 public:
+
     StudentWorld(std::string assetDir)
         : GameWorld(assetDir)
-    {}
+    {
+        ticks = 0;
+        m_level = 1;
+        m_lives = 3;
+    }
 
-    void setGameText();
-    virtual int init();
-    virtual int move();
-    virtual void cleanUp();
+	void setGameText();
+	virtual int init();
+	virtual int move();
+	virtual void cleanUp();
 
 	void removeDeadActors();
-    void deleteDirt(int xPassed, int yPassed); 
-    bool checkActorBelow(int xPassed, int yPassed, int IMID);
-    bool checkDirtBelow(int xPassed, int yPassed);
+
+	void deleteDirt(int xPassed, int yPassed);
+	//bool checkActorBelow(int xPassed, int yPassed, int IMID);
+	bool checkBoulderBelow(int xPassed, int yPassed);
+	bool checkDiggermanBelow(int xPassed, int yPassed);
+	bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
+	bool checkDirtOrActor(int xPassed, int yPassed);
+	bool checkDirtBelow(int xPassed, int yPassed);
+	void setDiggermanHP(int hitPoints);
+	void annoyDiggerman(int hitPoints);
 	bool ItemDoesNotExist(int itemX, int itemY);
 	bool distanceBetweenObjs(int x, int y);
 	bool distanceBtwObj(int, int);
    
+
+	void squirt(int xPassed, int yPassed, Actor::Direction dir);
+
 private:
+
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
 	std::vector<Actor*> my_actors;
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
+    int ticks;
+    int m_level;
+    int m_lives;
 };
 
 #endif // STUDENTWORLD_H_
