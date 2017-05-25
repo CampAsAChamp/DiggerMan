@@ -198,12 +198,23 @@ void WaterPool::doSomething()
 //PROTESTER //IMPLEMENT NEXT
 void Protester::doSomething()
 {
+    if (!isAlive())
+        return;
     
+    if (waitingTime < tickToWaitBetweenMoves)
+    {
+        waitingTime++;
+        cout << "Waiting for " << waitingTime << "ticks \n";
+    }
     
-    StudentWorld* world = getWorld();
-    int ticksToWaitBetweenMoves = max(0, (3 - (1/4)));
-    
-    
+    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), getDirection()) && nonRestingTicks > 15) //Check if 4 units away from DiggerMan
+    {
+        waitingTime = 0;
+        nonRestingTicks = 0;
+        getWorld()->annoyDiggerman(2); //Cause 2 points of annoyance to diggerman
+        getWorld()->playSound(SOUND_PROTESTER_YELL);
+        cout << "Protester yelled at Diggerman";
+    }
 }
 
 //SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
