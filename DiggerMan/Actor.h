@@ -13,6 +13,10 @@ enum BoulderState
 {
     stable, falling, waiting
 };
+enum GoldNuggetState
+{
+	sleep, awake
+};
 
 class Actor : public GraphObject
 {
@@ -102,8 +106,17 @@ public:
     GoldNugget(StudentWorld * world, int startX, int startY)
         : Actor(world, IMID_GOLD, startX, startY, right, 1.0, 2)
     {
+		this->m_state = sleep;
         setVisible(true);
     }
+	void doSomething();
+	bool isStable();
+private:
+	GoldNuggetState m_state;
+//	unsigned int nearBy = 
+
+
+
 };
 
 class Boulder : public Actor
