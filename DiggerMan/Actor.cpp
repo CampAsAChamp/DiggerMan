@@ -101,7 +101,6 @@ bool Boulder::isStable()
 
 void Boulder::doSomething()
 {
-
 	if (!isAlive())
 		return;
 
@@ -140,16 +139,7 @@ void Boulder::doSomething()
 		{
 			m_state = stable;
 			setHitpoints(0);
-			//cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
 		}
-        else 
-        {
-			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
-            m_state = stable;
-            setHitpoints(0);
-            //cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
-        }
-
 
 		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
 		{

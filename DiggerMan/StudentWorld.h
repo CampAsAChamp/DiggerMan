@@ -9,8 +9,6 @@
 #include <iostream>
 #include <stdlib.h>     // srand, rand
 #include <time.h>
-#include <cmath>
-#include <vector>
 
 using namespace std;
 
@@ -60,16 +58,13 @@ public:
 	void setDiggermanHP(int hitPoints);
 	void annoyDiggerman(int hitPoints);
 	bool ItemDoesNotExist(int itemX, int itemY);
-	bool distanceBetweenObjs(int x, int y);
-	bool distanceBtwObj(int, int);
-   
-
 	void squirt(int xPassed, int yPassed, Actor::Direction dir);
+
+	inline DiggerMan* getDiggerMan() {return m_diggerman;}
 
 private:
 
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
-	std::vector<Actor*> my_actors;
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
     int ticks;
