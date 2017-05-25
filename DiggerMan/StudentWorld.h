@@ -46,6 +46,7 @@ public:
     bool checkDirtBelow(int xPassed, int yPassed);
 	bool ItemDoesNotExist(int itemX, int itemY);
 	bool distanceBetweenObjs(int x, int y);
+	bool distanceBtwObj(int, int);
    
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];

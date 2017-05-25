@@ -90,7 +90,7 @@ void Boulder::doSomething()
     //TODO: Check if still alive and immediately return
     if (!isAlive())
     {
-        cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
+        //cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
         return;
     }
 
@@ -99,26 +99,26 @@ void Boulder::doSomething()
         if (isStable())
         {
             m_state = stable;
-            cout << "\tBoulder at " << getX() << "|" << getY() << " is stable\n";
+            //cout << "\tBoulder at " << getX() << "|" << getY() << " is stable\n";
         }
         else
         {
             m_state = waiting;
-            cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting\n";
+            //cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting\n";
         }
-        cout << "-----------------------------------------\n";
+       // cout << "-----------------------------------------\n";
     }
     else if (waitTime < 30 && m_state == waiting)
     {
         waitTime++;
-        cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting for " << waitTime << " ticks\n";
+        //cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting for " << waitTime << " ticks\n";
         return;
     }
     else if (waitTime >= 30 && m_state == waiting)
     {
         waitTime = 0;
         m_state = falling;
-        cout << "\tBoulder at " << getX() << "|" << getY() << " is moving to a falling state\n";
+        //cout << "\tBoulder at " << getX() << "|" << getY() << " is moving to a falling state\n";
         getWorld()->playSound(SOUND_FALLING_ROCK);
 
     }
@@ -128,7 +128,7 @@ void Boulder::doSomething()
         //Runs on top of another boulder
         //Runs into dirt (By moving down a square the boulder would overlap
         //Then must set state to dead so it can be removed from game
-        cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
+        //cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
 
 		if (getY() >= 1 && !getWorld()->checkActorBelow(getX(), getY(), IMID_DIRT)) //If there isn't any dirt below it and not at the bottom, then keep falling
         {
@@ -138,14 +138,14 @@ void Boulder::doSomething()
 		{
 			m_state = stable;
 			setHitpoints(0);
-			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
+			//cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
 		}
         else 
         {
 			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
             m_state = stable;
             setHitpoints(0);
-            cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
+            //cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
         }
 
 
