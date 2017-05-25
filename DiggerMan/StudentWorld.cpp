@@ -33,7 +33,7 @@ int StudentWorld::init()
 	srand(time(NULL));
 	int randX = rand() % MAXSIZE_X;
 	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
-	int boulderAtLVL = 3;
+	int boulderAtLVL = 7;
 
 	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
 	{
@@ -66,7 +66,7 @@ int StudentWorld::init()
 
 	for (int i = 0; i < boulderAtLVL; i++)
 	{
-		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX, randY))
+		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY) && distanceBtwObj(randX,randY))
 		{
 			m_actor[randX][randY] = new Boulder(this, randX, randY);
 			deleteDirt(randX, randY);
@@ -97,7 +97,8 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 		{
 			if (m_dirt[x][y]->isVisible())
 			{
-				objectDoesNotExist = true;
+				objectExist = true;
+
 			}
 			else
 			{
@@ -108,6 +109,49 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 	}
 	return objectDoesNotExist;
 }
+
+bool StudentWorld::distanceBtwObj(int randX, int randY)
+{
+	int objX, objY;
+	double distance = 0;
+	for (size_t x = 0; x < MAXSIZE_X; x++)
+	{
+		for (size_t y = 0; y < MAXSIZE_Y; y++)
+		{
+			if (m_actor[x][y] != 0)
+			{
+				objX = m_actor[x][y]->getX();
+				objY = m_actor[x][y]->getY();
+				distance = sqrt(pow((randX - objX), 2) + pow((randY - objY), 2));
+				if (distance <= 6)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
+//bool StudentWorld::distanceBetweenObjs(int randX, int randY)
+//{
+//	int objX, objY;
+//	double distance = 0;
+//	for (size_t i = 0; i < my_actors.size(); i++)
+//	{
+//		objX = my_actors.at(i)->getX();
+//		objY = my_actors.at(i)->getY();
+//		distance = sqrt(pow((randX-objX),2) + pow((randY-objY), 2));
+//
+//		if (distance <= 6)
+//		{
+//			return false;
+//		}
+//	}
+//					cout << "Distance: " << distance << endl;
+//
+//	return true;
+//}
 
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
 {
@@ -318,9 +362,11 @@ int StudentWorld::move()
     ticks++;
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
 	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
+	
 
 	StudentWorld::setGameText();
 	m_diggerman->doSomething(); //Diggerman doSomething
+
     
     //WILL REPLACE '1' LATER WITH CURRENT_LEVEL_NUM
     int G = 1 * 25 + 300; //1 in G CHANCE THAT A WATERPOOL WILL SPAWN BASED ON TICKS
