@@ -14,6 +14,11 @@ enum BoulderState
     stable, falling, waiting
 };
 
+enum ProtesterState
+{
+    rest, leaveOilField
+};
+
 class Actor : public GraphObject
 {
 public:
@@ -138,6 +143,9 @@ public:
     {
         setVisible(false); //Barrels should start hidden and only be discovered when walked over
     }
+    
+    void doSomething();
+    
 };
 
 class GoldNugget : public Actor
@@ -177,19 +185,23 @@ private:
 class Protester : public Actor
 {
 public:
-
-	Protester(StudentWorld * world, int startX, int startY)
-		:Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
-	{
-		setVisible(true);
-		setHitpoints(5);
-	}
-
-	void doSomething();
-
+    
+    Protester(StudentWorld * world, int startX, int startY)
+    :Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+    {
+        setVisible(true);
+        setHitpoints(5);
+    }
+    
+    void doSomething();
+    ProtesterState getState() { return m_state; }
+    
 private:
-	//int tickToWaitBetweenMoves = max(0, (3 - (1 / 4)));
-
+    unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+    unsigned int waitingTime = 0;
+    unsigned int nonRestingTicks = 0;
+    
+    ProtesterState m_state;
 };
 
 class WaterPool: public Actor

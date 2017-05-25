@@ -35,7 +35,7 @@ public:
         : GameWorld(assetDir)
     {
         ticks = 0;
-        m_level = 1;
+        m_level = 0;
         m_lives = 3;
     }
 
@@ -49,10 +49,17 @@ public:
     void deleteDirt(int xPassed, int yPassed); 
     //bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
+    bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
-      bool checkDirt(int xPassed, int yPassed);
+    bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
 	void setDiggermanHP(int hitPoints);
+    inline void annoyDiggerman(int hitPoints)
+    {
+        int tempHP = m_diggerman->getHitpoints();
+        tempHP = tempHP - hitPoints;
+        m_diggerman->setHitpoints(tempHP);
+    }
 	bool ItemDoesNotExist(int itemX, int itemY);
       void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
