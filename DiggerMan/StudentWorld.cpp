@@ -141,6 +141,12 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
     }
 }
 
+bool StudentWorld::checkDirt(int xPassed, int yPassed)
+{
+	return true;
+}
+
+
 bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 {
 	bool dirtFound = true;
@@ -430,8 +436,6 @@ bool StudentWorld::checkDiggerman(int xPassed, int yPassed, Protester::Direction
     }
     return diggermanFound;
 }
-
-
 
 void StudentWorld::cleanUp()
 {}

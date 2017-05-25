@@ -136,66 +136,12 @@ void Boulder::doSomething()
 		getWorld()->playSound(SOUND_FALLING_ROCK);
 
 	}
-	else if (m_state == falling)
-	{
-		//Move down one square each tick until it hits the bottom of the field
-		//Runs on top of another boulder
-		//Runs into dirt (By moving down a square the boulder would overlap
-		//Then must set state to dead so it can be removed from game
-		cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
-
-		if (getWorld()->checkDirtBelow(getX(), getY()) || getY() < 1)
-		{
-			m_state = stable;
-			setHitpoints(0);
-			cout << "\tBoulder at " << getX() << "|" << getY() << " is dead at the bottom\n";
-			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
-		}
-
-		else if (getWorld()->checkBoulderBelow(getX(), getY()))
-		{
-			m_state = stable;
-			setHitpoints(0);
-			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
-		}
-
-		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
-		{
-			m_state = stable;
-			getWorld()->setDiggermanHP(0);
-			cout << "\t Boulder hit DiggerMan\n";
-		}
-
-		else
-		{
-			moveTo(getX(), (getY() - 1)); //If there isn't any dirt below it and not at the bottom, then keep falling
-		}
-	}
 }
-
 void WaterPool::doSomething()
-{
-    StudentWorld* world = getWorld();
-    DiggerMan* diggerMan = world->getDiggerMan();
-    
-
-    
-    cout << "DIGGERMAN W LOC: " << diggerMan->getX() << endl;
-    cout << "DIGGERMAN W LOC: " << diggerMan->getY() << endl;
-    cout << "WATERPOOL LOC: " << getX() << endl;
-    cout << "WATERPOOL LOC: " << getY() << endl;
-    
-    if (diggerMan->getX() == getX() && diggerMan->getY() == getY())
-    {
-        setHitpoints(0);
-        world->playSound(SOUND_GOT_GOODIE);
-        diggerMan->addWater(5);
-        world->increaseScore(100);
-        
-    }
-}
+{}
 
 //PROTESTER //IMPLEMENT NEXT
+
 void Protester::doSomething()
 {
     if (!isAlive())

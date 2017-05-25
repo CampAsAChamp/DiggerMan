@@ -49,6 +49,7 @@ public:
     void deleteDirt(int xPassed, int yPassed); 
     //bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
+
     bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirt(int xPassed, int yPassed);
