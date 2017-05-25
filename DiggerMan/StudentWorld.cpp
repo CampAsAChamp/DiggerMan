@@ -29,63 +29,67 @@ int StudentWorld::init()
 {
     if (m_lives == 3)
     {
-    m_diggerman = new DiggerMan(this);
-	srand(time(NULL));
-	int randX = rand() % MAXSIZE_X;
-	int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
-	int boulderAtLVL = 7;
+        m_diggerman = new DiggerMan(this);
+        srand(time(NULL));
+        
+        int randX = rand() % MAXSIZE_X;
+        int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+        
+        int barrelX = rand()%MAXSIZE_X;
+        int barrelY = rand()%MAXSIZE_Y;
+        
+        int barrelsAtLVL = min(2 + m_level, 18); //BARREL NUMBER SPAWN
+        int boulderAtLVL = min(m_level / 2 + 2, 7);
 
-	for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
-	{
-		for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
-		{
-			m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
-		}
-	}
+        for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
+        {
+            for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
+            {
+                m_actor[i][j] = 0; //Initializing all actors to 0 in order to check if there is an actual actor there
+            }
+        }
 
-	for (int x = 0; x < MAXSIZE_X; x++) //VERTICAL AXIS (X-Axis)
-	{
-		for (int y = 0; y < (MAXSIZE_Y); y++) //HORIZONTAL AXIS (Y-Axis)
-		{
-			m_dirt[x][y] = new Dirt(this, x, y);
+        for (int x = 0; x < MAXSIZE_X; x++) //VERTICAL AXIS (X-Axis)
+        {
+            for (int y = 0; y < (MAXSIZE_Y); y++) //HORIZONTAL AXIS (Y-Axis)
+            {
+                m_dirt[x][y] = new Dirt(this, x, y);
 
-			if (x > MINESHAFT_START_LEFT && x < MINESHAFT_STOP_RIGHT) //If below the mineshaft
-			{
-				if (y > MINESHAFT_BOTTOM)
-				{
-					m_dirt[x][y]->setVisible(false);
-				}
-			}
+                if (x > MINESHAFT_START_LEFT && x < MINESHAFT_STOP_RIGHT) //If below the mineshaft
+                {
+                    if (y > MINESHAFT_BOTTOM)
+                    {
+                        m_dirt[x][y]->setVisible(false);
+                    }
+                }
 
-			if (y > MAXSIZE_Y - 5)
-			{
-				m_dirt[x][y]->setVisible(false);
-			}
-		}
-	}
+                if (y > MAXSIZE_Y - 5)
+                {
+                    m_dirt[x][y]->setVisible(false);
+                }
+            }
+        }
 
-	for (int i = 0; i < boulderAtLVL; i++)
-	{
-		if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY) && distanceBtwObj(randX,randY))
-		{
-			m_actor[randX][randY] = new Boulder(this, randX, randY);
-			deleteDirt(randX, randY);
-			randX = rand() % MAXSIZE_X;
-			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
-		}
-		else
-		{
-			randX = rand() % MAXSIZE_X;
-			randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
-			i--;
-		}
-	}
-  
-}
+        for (int i = 0; i < boulderAtLVL; i++)
+        {
+            if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY))
+            {
+                m_actor[randX][randY] = new Boulder(this, randX, randY);
+                deleteDirt(randX, randY);
+                randX = rand() % MAXSIZE_X;
+                randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+            }
+            else
+            {
+                randX = rand() % MAXSIZE_X;
+                randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
+                i--;
+            }
+        }
+    }
 
 	return GWSTATUS_CONTINUE_GAME;
 }
-
 bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 {
     
@@ -98,7 +102,6 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 			if (m_dirt[x][y]->isVisible())
 			{
 				objectDoesNotExist = true;
-
 			}
 			else
 			{
@@ -110,52 +113,9 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 	return objectDoesNotExist;
 }
 
-bool StudentWorld::distanceBtwObj(int randX, int randY)
-{
-	int objX, objY;
-	double distance = 0;
-	for (size_t x = 0; x < MAXSIZE_X; x++)
-	{
-		for (size_t y = 0; y < MAXSIZE_Y; y++)
-		{
-			if (m_actor[x][y] != 0)
-			{
-				objX = m_actor[x][y]->getX();
-				objY = m_actor[x][y]->getY();
-				distance = sqrt(pow((randX - objX), 2) + pow((randY - objY), 2));
-				if (distance <= 6)
-				{
-					return false;
-				}
-			}
-		}
-	}
-	return true;
-}
-
-//bool StudentWorld::distanceBetweenObjs(int randX, int randY)
-//{
-//	int objX, objY;
-//	double distance = 0;
-//	for (size_t i = 0; i < my_actors.size(); i++)
-//	{
-//		objX = my_actors.at(i)->getX();
-//		objY = my_actors.at(i)->getY();
-//		distance = sqrt(pow((randX-objX),2) + pow((randY-objY), 2));
-//
-//		if (distance <= 6)
-//		{
-//			return false;
-//		}
-//	}
-//					cout << "Distance: " << distance << endl;
-//
-//	return true;
-//}
-
 void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE JUST SETS VISIBLE //WILL CLEAR LATER IN THE CLEAR ALL FUNCTION - Joseph
 {
-	bool dirtDeleted = false;
+    bool dirtDeleted = false;
 	for (int x = xPassed; x < xPassed + 4; x++)
 	{
 		for (int y = yPassed; y < yPassed + 4; y++)
@@ -165,7 +125,7 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
 				if ((x < MAXSIZE_Y) && (y < MAXSIZE_X))
 				{
 					m_dirt[x][y]->setVisible(false);
-					dirtDeleted = true;
+                    dirtDeleted = true;
 				}
 			}
 			else
@@ -174,11 +134,11 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
 			}
 		}
 	}
-
-	if (dirtDeleted == true)
-	{
-		playSound(SOUND_DIG);
-	}
+    
+    if (dirtDeleted == true)
+    {
+        playSound(SOUND_DIG);
+    }
 }
 
 bool StudentWorld::checkDirt(int xPassed, int yPassed)
@@ -205,29 +165,29 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 	}
 	return dirtFound;
 }
-
-bool StudentWorld::checkDirtOrActor(int xPassed, int yPassed)
+bool StudentWorld::checkDirt(int xPassed, int yPassed)
 {
-	bool dirtFound = true;
-
-	if (xPassed > 0 && xPassed < MAXSIZE_X && yPassed > 0 && yPassed < MAXSIZE_Y)
-	{
-		if (m_actor[xPassed][yPassed] != 0 || m_dirt[xPassed][yPassed]->isVisible())
-		{
-			dirtFound = true;
-		}
-		else
-		{
-			dirtFound = false;
-		}
-	}
-	else
-	{
-		dirtFound = true;
-	}
-
-	return dirtFound;
+    bool dirtFound = true;
+    
+    if (xPassed > 0 && xPassed < MAXSIZE_X && yPassed > 0 && yPassed < MAXSIZE_Y)
+    {
+        if (m_actor[xPassed][yPassed] != 0 || m_dirt[xPassed][yPassed]->isVisible())
+        {
+            dirtFound = true;
+        }
+        else
+        {
+            dirtFound = false;
+        }
+    }
+    else
+    {
+        dirtFound = true;
+    }
+    
+    return dirtFound;
 }
+
 
 bool StudentWorld::checkBoulderBelow(int xPassed, int yPassed)
 {
@@ -257,77 +217,14 @@ bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
 		return true;
 	else
 		return false;
+	
 }
 
-bool StudentWorld::checkDiggerman(int xPassed, int yPassed, Protester::Direction dir)
-{
-	bool diggermanFound = false;
-
-
-	//Check Above
-	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
-	{
-		if (yPassed + 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
-			diggermanFound = true;
-	}
-
-	//Check Below
-	for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
-	{
-		if (yPassed - 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
-			diggermanFound = true;
-	}
-
-	//Check Left
-	for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
-	{
-		if (yPassed == m_diggerman->getY() && xPassed - 4 == m_diggerman->getX())
-			diggermanFound = true;
-	}
-
-	//Check Right
-	for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
-	{
-		if (yPassed == m_diggerman->getY() && xPassed + 4 == m_diggerman->getX())
-			diggermanFound = true;
-	}
-
-	//Check if Protester is facing Diggerman
-	if (diggermanFound)
-	{
-		switch (dir)
-		{
-			case Protester::left:
-				if (m_diggerman->getX() < xPassed)
-					return true;
-
-			case Protester::right:
-				if (m_diggerman->getX() > xPassed)
-					return true;
-
-			case Protester::up:
-				if (m_diggerman->getY() > yPassed)
-					return true;
-
-			case Protester::down:
-				if (m_diggerman->getY() < yPassed)
-					return true;
-		}
-	}
-	return diggermanFound;
-}
-
+    
 void StudentWorld::setDiggermanHP(int hitPoints)
 {
 	m_diggerman->setHitpoints(hitPoints);
 	cout << "\tDiggerman is dead\n";
-}
-
-void StudentWorld::annoyDiggerman(int hitPoints)
-{
-	int tempHP = m_diggerman->getHitpoints();
-	tempHP = tempHP - hitPoints;
-	m_diggerman->setHitpoints(tempHP);
 }
 
 void StudentWorld::removeDeadActors()
@@ -368,11 +265,9 @@ int StudentWorld::move()
     ticks++;
 	// This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
 	// Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-	
 
 	StudentWorld::setGameText();
 	m_diggerman->doSomething(); //Diggerman doSomething
-
     
     //WILL REPLACE '1' LATER WITH CURRENT_LEVEL_NUM
     int G = 1 * 25 + 300; //1 in G CHANCE THAT A WATERPOOL WILL SPAWN BASED ON TICKS
@@ -397,6 +292,8 @@ int StudentWorld::move()
 		{
 			if (m_actor[i][j] != 0)
 			{
+
+
 				m_actor[i][j]->doSomething(); //Call doSomething for all actors
 			}
 			else
@@ -406,7 +303,6 @@ int StudentWorld::move()
 		}
 	}
 	removeDeadActors(); //Checks every tick to remove the actors that are dead
-
     
     if (!m_diggerman->isAlive())
     {
@@ -478,6 +374,67 @@ void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
     {
         return;
     }
+}
+
+bool StudentWorld::checkDiggerman(int xPassed, int yPassed, Protester::Direction dir)
+{
+    bool diggermanFound = false;
+    
+    
+    //Check Above
+    for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+    {
+        if (yPassed + 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
+            diggermanFound = true;
+    }
+    
+    //Check Below
+    for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+    {
+        if (yPassed - 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
+            diggermanFound = true;
+    }
+    
+    //Check Left
+    for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
+    {
+        if (yPassed == m_diggerman->getY() && xPassed - 4 == m_diggerman->getX())
+            diggermanFound = true;
+    }
+    
+    //Check Right
+    for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
+    {
+        if (yPassed == m_diggerman->getY() && xPassed + 4 == m_diggerman->getX())
+            diggermanFound = true;
+    }
+    
+    //Check if Protester is facing Diggerman
+    if (diggermanFound)
+    {
+        switch (dir)
+        {
+            case Protester::left:
+                if (m_diggerman->getX() < xPassed)
+                    return true;
+                
+            case Protester::right:
+                if (m_diggerman->getX() > xPassed)
+                    return true;
+                
+            case Protester::up:
+                if (m_diggerman->getY() > yPassed)
+                    return true;
+                
+            case Protester::down:
+                if (m_diggerman->getY() < yPassed)
+                    return true;
+                
+            default:
+                return false;
+        }
+    }
+    return diggermanFound;
 }
 
 void StudentWorld::cleanUp()

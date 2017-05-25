@@ -3,8 +3,6 @@
 
 #include "GraphObject.h"
 #include "GameWorld.h"
-#include <algorithm>
-
 
 const int DM_START_X = 30;
 const int DM_START_Y = 60;
@@ -22,7 +20,7 @@ enum GoldNuggetState
 
 enum ProtesterState
 {
-	rest, leaveOilField
+    rest, leaveOilField
 };
 
 class Actor : public GraphObject
@@ -149,6 +147,9 @@ public:
     {
         setVisible(false); //Barrels should start hidden and only be discovered when walked over
     }
+    
+    void doSomething();
+    
 };
 
 class GoldNugget : public Actor
@@ -182,7 +183,7 @@ public:
     }
 
     void doSomething();
-	bool isStable();
+    bool isStable();
     BoulderState getState()
     
     {
@@ -197,23 +198,24 @@ private:
 class Protester : public Actor
 {
 public:
-
-	Protester(StudentWorld * world, int startX, int startY)
-		:Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
-	{
-		setVisible(true);
-		setHitpoints(5);
-	}
-
-	void doSomething();
-	ProtesterState getState() { return m_state; }
-
+    
+    Protester(StudentWorld * world, int startX, int startY)
+    :Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+    {
+        setVisible(true);
+        setHitpoints(5);
+    }
+    
+    void doSomething();
+    ProtesterState getState() { return m_state; }
+    
 private:
-	unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
-	unsigned int waitingTime = 0;
-	unsigned int nonRestingTicks = 0;
 
-	ProtesterState m_state;
+    unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+    unsigned int waitingTime = 0;
+    unsigned int nonRestingTicks = 0;
+    
+    ProtesterState m_state;
 };
 
 class WaterPool: public Actor
