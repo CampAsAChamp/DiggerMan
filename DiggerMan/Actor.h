@@ -3,8 +3,6 @@
 
 #include "GraphObject.h"
 #include "GameWorld.h"
-#include <algorithm>
-
 
 const int DM_START_X = 30;
 const int DM_START_Y = 60;
@@ -14,11 +12,6 @@ class StudentWorld; //Forward declaration
 enum BoulderState
 {
     stable, falling, waiting
-};
-
-enum ProtesterState
-{
-	rest, leaveOilField
 };
 
 class Actor : public GraphObject
@@ -169,7 +162,7 @@ public:
     }
 
     void doSomething();
-	bool isStable();
+    bool isStable();
     BoulderState getState()
     
     {
@@ -193,15 +186,11 @@ public:
 	}
 
 	void doSomething();
-	ProtesterState getState() { return m_state; }
 
 private:
-	unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
-	unsigned int waitingTime = 0;
-	unsigned int nonRestingTicks = 0;
+	//int tickToWaitBetweenMoves = max(0, (3 - (1 / 4)));
 
-	ProtesterState m_state;
-
+};
 
 class WaterPool: public Actor
 {

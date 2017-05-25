@@ -3,11 +3,10 @@
 
 #include "GameWorld.h"
 #include "GameConstants.h"
-#include "GraphObject.h"
 #include "Actor.h"
 #include <string>
 #include <iostream>
-#include <stdlib.h>     // srand, rand
+#include <stdlib.h>     /* srand, rand */
 #include <time.h>
 
 using namespace std;
@@ -32,7 +31,6 @@ class DiggerMan; //FORWARD DECLARATION
 class StudentWorld : public GameWorld
 {
 public:
-
     StudentWorld(std::string assetDir)
         : GameWorld(assetDir)
     {
@@ -41,29 +39,29 @@ public:
         m_lives = 3;
     }
 
-	void setGameText();
-	virtual int init();
-	virtual int move();
-	virtual void cleanUp();
+    void setGameText();
+    virtual int init();
+    virtual int move();
+    virtual void cleanUp();
 
 	void removeDeadActors();
 
-	void deleteDirt(int xPassed, int yPassed);
-	//bool checkActorBelow(int xPassed, int yPassed, int IMID);
+    void deleteDirt(int xPassed, int yPassed); 
+    //bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
-	bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
-	bool checkDirtOrActor(int xPassed, int yPassed);
-	bool checkDirtBelow(int xPassed, int yPassed);
+      bool checkDirt(int xPassed, int yPassed);
+    bool checkDirtBelow(int xPassed, int yPassed);
 	void setDiggermanHP(int hitPoints);
-	void annoyDiggerman(int hitPoints);
 	bool ItemDoesNotExist(int itemX, int itemY);
-	void squirt(int xPassed, int yPassed, Actor::Direction dir);
+      void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
-	inline DiggerMan* getDiggerMan() {return m_diggerman;}
+    inline DiggerMan* getDiggerMan()
+    {
+        return m_diggerman;
+    }   
 
 private:
-
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
