@@ -97,7 +97,7 @@ bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 		{
 			if (m_dirt[x][y]->isVisible())
 			{
-				objectExist = true;
+				objectDoesNotExist = true;
 
 			}
 			else
@@ -180,6 +180,12 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
 		playSound(SOUND_DIG);
 	}
 }
+
+bool StudentWorld::checkDirt(int xPassed, int yPassed)
+{
+	return true;
+}
+
 
 bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 {
@@ -472,57 +478,6 @@ void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
     {
         return;
     }
-}
-
-	if (xPassed > -1 && xPassed < MAXSIZE_X && yPassed > -1 && yPassed < MAXSIZE_Y)
-	{
-		if (m_diggerman->getWater() > 0)
-		{
-			switch (dir)
-			{
-				case DiggerMan::up:
-					m_actor[xPassed][yPassed] = new Squirt(this, xPassed, yPassed + 4, DiggerMan::up);
-					m_actor[xPassed][yPassed]->setDirection(DiggerMan::up);
-					playSound(SOUND_PLAYER_SQUIRT);
-					m_diggerman->reduceWater();
-
-					return;
-
-				case DiggerMan::down:
-					m_actor[xPassed][yPassed] = new Squirt(this, xPassed, yPassed - 4, DiggerMan::down);
-					m_actor[xPassed][yPassed]->setDirection(DiggerMan::down);
-					playSound(SOUND_PLAYER_SQUIRT);
-					m_diggerman->reduceWater();
-					return;
-
-				case DiggerMan::right:
-					m_actor[xPassed][yPassed] = new Squirt(this, xPassed + 4, yPassed, DiggerMan::right);
-					m_actor[xPassed][yPassed]->setDirection(DiggerMan::right);
-					playSound(SOUND_PLAYER_SQUIRT);
-					m_diggerman->reduceWater();
-					return;
-
-				case DiggerMan::left:
-					m_actor[xPassed][yPassed] = new Squirt(this, xPassed - 4, yPassed, DiggerMan::left);
-					m_actor[xPassed][yPassed]->setDirection(DiggerMan::left);
-					playSound(SOUND_PLAYER_SQUIRT);
-					m_diggerman->reduceWater();
-					return;
-
-				default:
-					m_actor[xPassed][yPassed]->setHitpoints(0);
-					return;
-			}
-		}
-		else
-		{
-			return;
-		}
-	}
-	else
-	{
-		return;
-	}
 }
 
 void StudentWorld::cleanUp()

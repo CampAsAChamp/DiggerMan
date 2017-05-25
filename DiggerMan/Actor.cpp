@@ -128,137 +128,16 @@ void Boulder::doSomething()
 		getWorld()->playSound(SOUND_FALLING_ROCK);
 
 	}
-	else if (m_state == falling)
-	{
-		if (getWorld()->checkDirtBelow(getX(), getY()) || getY() < 1)
-		{
-			m_state = stable;
-			setHitpoints(0);
-		}
-
-		else if (getWorld()->checkBoulderBelow(getX(), getY()))
-		{
-			m_state = stable;
-			setHitpoints(0);
-			//cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
-		}
-        else 
-        {
-			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
-            m_state = stable;
-            setHitpoints(0);
-            //cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
-        }
-
-
-		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
-		{
-			m_state = stable;
-			getWorld()->setDiggermanHP(0);
-			cout << "\t Boulder hit DiggerMan\n";
-		}
-
-		else
-		{
-			moveTo(getX(), (getY() - 1)); //If there isn't any dirt below it and not at the bottom, then keep falling
-		}
-	}
+	
 }
 
-void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
+void Squirt::doSomething()
+{}//BOTTOM OF MAP ERROR FIX LATER
   
 void WaterPool::doSomething()
-{
-    StudentWorld* world = getWorld();
-    DiggerMan* diggerMan = world->getDiggerMan();
-    
-
-    
-    cout << "DIGGERMAN W LOC: " << diggerMan->getX() << endl;
-    cout << "DIGGERMAN W LOC: " << diggerMan->getY() << endl;
-    cout << "WATERPOOL LOC: " << getX() << endl;
-    cout << "WATERPOOL LOC: " << getY() << endl;
-    
-    if (diggerMan->getX() == getX() && diggerMan->getY() == getY())
-    {
-        setHitpoints(0);
-        world->playSound(SOUND_GOT_GOODIE);
-        diggerMan->addWater(5);
-        world->increaseScore(100);
-        
-    }
-}
+{}
 
 //PROTESTER //IMPLEMENT NEXT
-void Protester::doSomething()
-{
-	StudentWorld* world = getWorld();
-	DiggerMan* diggerMan = world->getDiggerMan();
-
-	cout << "Water: " << diggerMan->getWater() << endl;
-
-	if (distanceTraveled == 3)
-	{
-		setHitpoints(0);
-	}
-
-	switch (getDirection())
-	{
-		case up:
-			if (world->checkDirtOrActor(getX(), getY() + 1) == false)
-			{
-				moveTo(getX(), getY() + 1);
-				distanceTraveled++;
-			}
-			else
-			{
-				setHitpoints(0);
-			}
-
-			return;
-		case down:
-			if (world->checkDirtOrActor(getX(), getY() - 1) == false)
-			{
-				moveTo(getX(), getY() - 1);
-				distanceTraveled++;
-			}
-			else
-			{
-				setHitpoints(0);
-			}
-
-			return;
-		case left:
-			if (world->checkDirtOrActor(getX() - 1, getY()) == false)
-			{
-				moveTo(getX() - 1, getY());
-				distanceTraveled++;
-			}
-			else
-			{
-				setHitpoints(0);
-			}
-
-			return;
-
-		case right:
-			if (world->checkDirtOrActor(getX() + 1, getY()) == false)
-			{
-				moveTo(getX() + 1, getY());
-				distanceTraveled++;
-			}
-			else
-			{
-				setHitpoints(0);
-			}
-
-			return;
-
-		default: setHitpoints(0);
-			return;
-	}
-
-}
 
 void Protester::doSomething()
 {

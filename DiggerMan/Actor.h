@@ -214,7 +214,7 @@ private:
 	unsigned int nonRestingTicks = 0;
 
 	ProtesterState m_state;
-
+};
 
 class WaterPool: public Actor
 {
