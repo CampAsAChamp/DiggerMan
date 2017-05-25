@@ -3,10 +3,11 @@
 
 #include "GameWorld.h"
 #include "GameConstants.h"
+#include "GraphObject.h"
 #include "Actor.h"
 #include <string>
 #include <iostream>
-#include <stdlib.h>     /* srand, rand */
+#include <stdlib.h>     // srand, rand
 #include <time.h>
 
 using namespace std;
@@ -46,17 +47,15 @@ public:
 	//bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
-	bool checkDiggerman(int xPassed, int yPassed);
+	bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
 	bool checkDirtOrActor(int xPassed, int yPassed);
 	bool checkDirtBelow(int xPassed, int yPassed);
 	void setDiggermanHP(int hitPoints);
+	void annoyDiggerman(int hitPoints);
 	bool ItemDoesNotExist(int itemX, int itemY);
 	void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
-	inline DiggerMan* getDiggerMan()
-	{
-		return m_diggerman;
-	}
+	inline DiggerMan* getDiggerMan() {return m_diggerman;}
 
 private:
 	Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];

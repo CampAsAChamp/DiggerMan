@@ -185,10 +185,14 @@ public:
 	}
 
 	void doSomething();
+	ProtesterState getState() { return m_state; }
 
 private:
-	int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
-	int waitingTime = 0;
+	unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+	unsigned int waitingTime = 0;
+	unsigned int nonRestingTicks = 0;
+
+	ProtesterState m_state;
 
 };
 
