@@ -2,6 +2,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -72,7 +73,7 @@ int StudentWorld::init()
 
         for (int i = 0; i < boulderAtLVL; i++)
         {
-            if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY))
+            if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY) && distanceBtwObj(randX,randY))
             {
                 m_actor[randX][randY] = new Boulder(this, randX, randY);
                 deleteDirt(randX, randY);
@@ -141,12 +142,6 @@ void StudentWorld::deleteDirt(int xPassed, int yPassed) //DOESNT ACTUALLY DELETE
     }
 }
 
-bool StudentWorld::checkDirt(int xPassed, int yPassed)
-{
-	return true;
-}
-
-
 bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 {
 	bool dirtFound = true;
@@ -165,6 +160,7 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 	}
 	return dirtFound;
 }
+
 bool StudentWorld::checkDirt(int xPassed, int yPassed)
 {
     bool dirtFound = true;
@@ -436,6 +432,30 @@ bool StudentWorld::checkDiggerman(int xPassed, int yPassed, Protester::Direction
     }
     return diggermanFound;
 }
+
+bool StudentWorld::distanceBtwObj(int randX, int randY)
+{
+	int objX, objY;
+	double distance = 0;
+	for (size_t x = 0; x < MAXSIZE_X; x++)
+	{
+		for (size_t y = 0; y < MAXSIZE_Y; y++)
+		{
+			if (m_actor[x][y] != 0)
+			{
+				objX = m_actor[x][y]->getX();
+				objY = m_actor[x][y]->getY();
+				distance = sqrt(pow((randX - objX), 2) + pow((randY - objY), 2));
+				if (distance <= 6)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
 
 void StudentWorld::cleanUp()
 {}

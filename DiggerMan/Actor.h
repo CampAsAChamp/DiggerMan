@@ -3,6 +3,7 @@
 
 #include "GraphObject.h"
 #include "GameWorld.h"
+#include <algorithm>
 
 const int DM_START_X = 30;
 const int DM_START_Y = 60;

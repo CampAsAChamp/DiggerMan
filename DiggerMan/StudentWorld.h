@@ -62,12 +62,9 @@ public:
         m_diggerman->setHitpoints(tempHP);
     }
 	bool ItemDoesNotExist(int itemX, int itemY);
-      void squirt(int xPassed, int yPassed, Actor::Direction dir);
+	bool distanceBtwObj(int itemX, int itemY);
+    void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
-    inline DiggerMan* getDiggerMan()
-    {
-        return m_diggerman;
-    }   
 
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
