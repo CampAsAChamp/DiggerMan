@@ -172,8 +172,8 @@ void Boulder::doSomething()
 		}
 	}
 }
-
 void WaterPool::doSomething()
+
 {
     StudentWorld* world = getWorld();
     DiggerMan* diggerMan = world->getDiggerMan();
@@ -204,6 +204,7 @@ void WaterPool::doSomething()
     }
 }
 
+
 void Barrel::doSomething()
 {
     StudentWorld* world = getWorld();
@@ -223,6 +224,7 @@ void Barrel::doSomething()
 }
 
 //PROTESTER //IMPLEMENT NEXT
+
 void Protester::doSomething()
 {
     if (!isAlive())
@@ -252,11 +254,8 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
         return;
     }
     
-    StudentWorld* world = getWorld();
-    DiggerMan* diggerMan = world->getDiggerMan();
-
     
-    cout << "Water: " << diggerMan->getWater() << endl;
+	StudentWorld * world = getWorld();
     
     
     if (distanceTraveled == 3)

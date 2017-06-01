@@ -49,6 +49,7 @@ public:
     void deleteDirt(int xPassed, int yPassed); 
     //bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
+
     bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirt(int xPassed, int yPassed);
@@ -63,7 +64,9 @@ public:
         m_diggerman->setHitpoints(tempHP);
     }
 	bool ItemDoesNotExist(int itemX, int itemY);
-      void squirt(int xPassed, int yPassed, Actor::Direction dir);
+	bool distanceBtwObj(int itemX, int itemY);
+    void squirt(int xPassed, int yPassed, Actor::Direction dir);
+
 
     inline DiggerMan* getDiggerMan()
     {

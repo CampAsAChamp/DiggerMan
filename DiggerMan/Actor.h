@@ -3,6 +3,7 @@
 
 #include "GraphObject.h"
 #include "GameWorld.h"
+#include <algorithm>
 
 const int DM_START_X = 30;
 const int DM_START_Y = 60;
@@ -12,6 +13,10 @@ class StudentWorld; //Forward declaration
 enum BoulderState
 {
     stable, falling, waiting
+};
+enum GoldNuggetState
+{
+	sleep, awake
 };
 
 enum ProtesterState
@@ -154,8 +159,17 @@ public:
     GoldNugget(StudentWorld * world, int startX, int startY)
         : Actor(world, IMID_GOLD, startX, startY, right, 1.0, 2)
     {
+		this->m_state = sleep;
         setVisible(true);
     }
+	void doSomething();
+	bool isStable();
+private:
+	GoldNuggetState m_state;
+//	unsigned int nearBy = 
+
+
+
 };
 
 class Boulder : public Actor
@@ -197,6 +211,7 @@ public:
     ProtesterState getState() { return m_state; }
     
 private:
+
     unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
     unsigned int waitingTime = 0;
     unsigned int nonRestingTicks = 0;
