@@ -54,6 +54,8 @@ public:
 	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
+    bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
+    
 	void setDiggermanHP(int hitPoints);
     inline void annoyDiggerman(int hitPoints)
     {
@@ -65,6 +67,19 @@ public:
 	bool distanceBtwObj(int itemX, int itemY);
     void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
+
+    inline DiggerMan* getDiggerMan()
+    {
+        return m_diggerman;
+    }
+    inline int getLevel()
+    {
+        return m_level;
+    }
+    inline int getTicks()
+    {
+        return ticks;
+    }
 
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
