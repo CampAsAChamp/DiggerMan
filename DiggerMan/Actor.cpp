@@ -159,9 +159,10 @@ void Boulder::doSomething()
 //			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
 		}
 
-		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
+		else if (getWorld()->checkDiggerman(getX(), getY(),down)) //TODO: Fix radius of DiggerMan check
 		{
 			m_state = stable;
+            setHitpoints(0);
 			getWorld()->setDiggermanHP(0);
 //			cout << "\t Boulder hit DiggerMan\n";
 		}

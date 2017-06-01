@@ -469,7 +469,6 @@ bool StudentWorld::checkDiggerman(int xPassed, int yPassed, DiggerMan::Direction
     return diggermanFound;
 }
 
-//*****BUGGY***** NOT SURE IF WORKS
 bool StudentWorld::checkProtester(int xPassed, int yPassed, Protester::Direction dir)
 {
     bool protesterFound = false;
