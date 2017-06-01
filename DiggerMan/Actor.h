@@ -60,7 +60,7 @@ public:
         : Actor(world, IMID_PLAYER, DM_START_X, DM_START_Y)
     {
         setVisible(true);
-        m_water = 5;
+        m_water = 3;
     }
 
     virtual void doSomething();
@@ -141,10 +141,10 @@ public:
     Barrel(StudentWorld * world, int startX, int startY)
         : Actor(world, IMID_BARREL, startX, startY, right, 1.0, 2)
     {
-        setVisible(false); //Barrels should start hidden and only be discovered when walked over
+        setVisible(true); //Barrels should start hidden and only be discovered when walked over
     }
     
-    void doSomething();
+    virtual void doSomething();
     
 };
 

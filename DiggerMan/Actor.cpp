@@ -178,20 +178,47 @@ void WaterPool::doSomething()
     StudentWorld* world = getWorld();
     DiggerMan* diggerMan = world->getDiggerMan();
     
-
+    int level = world->getLevel();
+    
+    
+    //IMPLEMENTED 5/25/17 1:06 AM JOSEPH TICKS TO MAKE WATER POOL DISAPPEAR
+    int t = max(100, 300 - 10 * level);
+    
+    if (world->getTicks() == t) {
+        setHitpoints(0);
+        return;
+    }
     
     cout << "DIGGERMAN W LOC: " << diggerMan->getX() << endl;
     cout << "DIGGERMAN W LOC: " << diggerMan->getY() << endl;
     cout << "WATERPOOL LOC: " << getX() << endl;
     cout << "WATERPOOL LOC: " << getY() << endl;
     
-    if (diggerMan->getX() == getX() && diggerMan->getY() == getY())
+    if (world->checkDiggerman(getX(), getY(), getDirection()))
     {
         setHitpoints(0);
         world->playSound(SOUND_GOT_GOODIE);
         diggerMan->addWater(5);
         world->increaseScore(100);
         
+    }
+}
+
+void Barrel::doSomething()
+{
+    StudentWorld* world = getWorld();
+    
+    if (!isAlive())
+    {
+        return;
+    }
+    
+    if (this->isVisible() && world->checkDiggerman(this->getX(), this->getY(), this->getDirection()))
+    {
+        cout << "GOT OIL" << endl;
+        setHitpoints(0);
+        world->playSound(SOUND_FOUND_OIL);
+        world->increaseScore(1000);
     }
 }
 
@@ -237,6 +264,12 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
         setHitpoints(0);
     }
     
+
+    //IMPLEMENT CONNECTION BETWEEN PROTESTER AND SQUIRT
+    
+    
+    
+    //SQUIRT MOVEMENT
     switch(getDirection())
     {
         case up:
@@ -292,5 +325,4 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
         default: setHitpoints(0);
             return;
     }
-
 }

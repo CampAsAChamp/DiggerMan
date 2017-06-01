@@ -36,7 +36,12 @@ int StudentWorld::init()
         int randY = rand() % MAX_BOULDER_Y + Y_OFFSET;
         
         int barrelX = rand()%MAXSIZE_X;
-        int barrelY = rand()%MAXSIZE_Y;
+        int barrelY = rand()%MAXSIZE_Y + Y_OFFSET;
+        
+        int pX = 30;
+        int pY = 20;
+        
+        m_actor[pX][pY] = new Protester(this, pX, pY);
         
         int barrelsAtLVL = min(2 + m_level, 18); //BARREL NUMBER SPAWN
         int boulderAtLVL = min(m_level / 2 + 2, 7);
@@ -70,6 +75,30 @@ int StudentWorld::init()
             }
         }
 
+        //BARREL HANDLER
+        //*****BUGGY****** SOMETIMES FREEZES UP ON STARTUP
+        for (int i = 0; i < barrelsAtLVL; i++)
+        {
+            cout << "BARREL COORDS: " << barrelX << " " << barrelY << endl;
+            if (barrelX < (MAXSIZE_X - X_BOUND_RIGHT) && barrelY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(barrelX, barrelY))
+            {
+            m_actor[barrelX][barrelY] = new Barrel(this, barrelX, barrelY);
+            barrelX = rand()%MAXSIZE_X;
+            barrelY = rand()%MAXSIZE_Y + Y_BOUND_TOP;
+        
+            }
+            else
+            {
+                barrelX = rand() % MAXSIZE_X;
+                barrelY = rand() % MAXSIZE_Y + Y_BOUND_TOP;
+                i--;
+            }
+            
+            
+            
+        }
+        
+        //BOULDER HANDLER
         for (int i = 0; i < boulderAtLVL; i++)
         {
             if (randX < (MAXSIZE_X - X_BOUND_RIGHT) && randY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(randX,randY))
@@ -264,12 +293,12 @@ int StudentWorld::move()
 	m_diggerman->doSomething(); //Diggerman doSomething
     
     //WILL REPLACE '1' LATER WITH CURRENT_LEVEL_NUM
-    int G = 1 * 25 + 300; //1 in G CHANCE THAT A WATERPOOL WILL SPAWN BASED ON TICKS
+    int G = m_level * 25 + 300; //1 in G CHANCE THAT A WATERPOOL WILL SPAWN BASED ON TICKS
     
     if (ticks%G == 0) //IF TICKS PASSED IS G CHANCE THEN SPAWN WATERPOOL
     {
         int x = rand()%MAXSIZE_X;
-        int y = rand()%MAXSIZE_Y;
+        int y = rand()%MAXSIZE_Y - Y_BOUND_TOP;
         
         m_actor[x][y] = new WaterPool(this, x, y);
     }
@@ -374,64 +403,67 @@ bool StudentWorld::checkDiggerman(int xPassed, int yPassed, Protester::Direction
 {
     bool diggermanFound = false;
     
-    
     //Check Above
-    for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
+    for (int i = 1; i < 4; i++)
     {
-        if (yPassed + 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
-            diggermanFound = true;
+        if (xPassed + i == m_diggerman->getX() && yPassed == m_diggerman->getY())
+            return true;
+        else if (xPassed - i == m_diggerman->getX() && yPassed == m_diggerman->getY())
+            return true;
+        else if (xPassed == m_diggerman->getX() && yPassed + i == m_diggerman->getY())
+            return true;
+        else if (xPassed == m_diggerman->getX() && yPassed - i == m_diggerman->getY())
+            return true;
     }
     
-    //Check Below
-    for (int xToCheck = xPassed; xToCheck < xPassed + 4; xToCheck++)
-    {
-        if (yPassed - 4 == m_diggerman->getY() && xPassed == m_diggerman->getX())
-            diggermanFound = true;
-    }
+    /*
+     if (diggermanFound)
+     {
+     switch (dir)
+     {
+     case Protester::left:
+     if (m_diggerman->getX() < xPassed)
+     return true;
+     
+     case Protester::right:
+     if (m_diggerman->getX() > xPassed)
+     return true;
+     
+     case Protester::up:
+     if (m_diggerman->getY() > yPassed)
+     return true;
+     
+     case Protester::down:
+     if (m_diggerman->getY() < yPassed)
+     return true;
+     
+     default:
+     return false;
+     }
+     }
+    */
     
-    //Check Left
-    for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
-    {
-        if (yPassed == m_diggerman->getY() && xPassed - 4 == m_diggerman->getX())
-            diggermanFound = true;
-    }
     
-    //Check Right
-    for (int yToCheck = yPassed; yToCheck < yPassed + 4; yToCheck++)
-    {
-        if (yPassed == m_diggerman->getY() && xPassed + 4 == m_diggerman->getX())
-            diggermanFound = true;
-    }
-    
-    //Check if Protester is facing Diggerman
-    if (diggermanFound)
-    {
-        switch (dir)
-        {
-            case Protester::left:
-                if (m_diggerman->getX() < xPassed)
-                    return true;
-                
-            case Protester::right:
-                if (m_diggerman->getX() > xPassed)
-                    return true;
-                
-            case Protester::up:
-                if (m_diggerman->getY() > yPassed)
-                    return true;
-                
-            case Protester::down:
-                if (m_diggerman->getY() < yPassed)
-                    return true;
-                
-            default:
-                return false;
-        }
-    }
     return diggermanFound;
 }
 
-
+//*****BUGGY***** NOT SURE IF WORKS
+bool StudentWorld::checkProtester(int xPassed, int yPassed, Protester::Direction dir)
+{
+    bool protesterFound = false;
+    
+    //Check Above
+    if (dir == Protester::down)
+    {
+        for (int i = 1; i < 4; i++)
+        {
+           if (xPassed == m_actor[xPassed][yPassed]->getX() && yPassed - i == m_actor[xPassed][yPassed]->getY())
+                return true;
+        }
+    }
+    
+    return protesterFound;
+}
 
 void StudentWorld::cleanUp()
 {}
