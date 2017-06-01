@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 // Students:  Add code to this file (if you wish), StudentWorld.h, Actor.h and Actor.cpp
 
 GameWorld* createStudentWorld(string assetDir)
@@ -122,6 +121,7 @@ int StudentWorld::init()
 
 	return GWSTATUS_CONTINUE_GAME;
 }
+
 bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 {
     
@@ -191,6 +191,7 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 	}
 	return dirtFound;
 }
+
 bool StudentWorld::checkDirt(int xPassed, int yPassed)
 {
     bool dirtFound = true;
@@ -213,7 +214,6 @@ bool StudentWorld::checkDirt(int xPassed, int yPassed)
     
     return dirtFound;
 }
-
 
 bool StudentWorld::checkBoulderBelow(int xPassed, int yPassed)
 {
@@ -246,7 +246,6 @@ bool StudentWorld::checkDiggermanBelow(int xPassed, int yPassed)
 	
 }
 
-    
 void StudentWorld::setDiggermanHP(int hitPoints)
 {
 	m_diggerman->setHitpoints(hitPoints);
@@ -273,7 +272,7 @@ void StudentWorld::removeDeadActors()
 		}
 	}
     
-    for (int h = 0; h < protester.size(); h++)
+    for (size_t h = 0; h < protester.size(); h++)
     {
         if (protester[h] != nullptr && !protester[h]->isAlive())
         {
@@ -356,8 +355,6 @@ int StudentWorld::move()
 
 	return GWSTATUS_CONTINUE_GAME;
 }
-
-
 
 void StudentWorld::squirt(int xPassed, int yPassed, DiggerMan::Direction dir)
 {
@@ -479,7 +476,7 @@ bool StudentWorld::checkProtester(int xPassed, int yPassed, Protester::Direction
     
     //Check Above
 
-    for (int i = 0; i < protester.size(); i++)
+    for (size_t i = 0; i < protester.size(); i++)
     {
         for (int j = 0; j < 4; j++)
         {

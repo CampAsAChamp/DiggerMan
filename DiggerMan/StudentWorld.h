@@ -56,10 +56,6 @@ public:
     bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
     bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
-    
-    
-    
-    
 	void setDiggermanHP(int hitPoints);
     inline void annoyDiggerman(int hitPoints)
     {
