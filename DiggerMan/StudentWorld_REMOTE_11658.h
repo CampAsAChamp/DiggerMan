@@ -8,7 +8,6 @@
 #include <iostream>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
-#include <vector>
 
 using namespace std;
 
@@ -36,10 +35,8 @@ public:
         : GameWorld(assetDir)
     {
         ticks = 0;
-        m_level = 1;
+        m_level = 0;
         m_lives = 3;
-        protesterIndex = 0;
-        m_oilCollected = 0;
     }
 
     void setGameText();
@@ -54,15 +51,10 @@ public:
 	bool checkBoulderBelow(int xPassed, int yPassed);
 
     bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
-    bool barrelVisible(int xPassed, int yPassed);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
     bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
-    void checkItems(int xPassed, int yPassed);
-    
-    
-    
     
 	void setDiggermanHP(int hitPoints);
     inline void annoyDiggerman(int hitPoints)
@@ -71,22 +63,9 @@ public:
         tempHP = tempHP - hitPoints;
         m_diggerman->setHitpoints(tempHP);
     }
-    
-    inline void annoyProtester(int hitPoints)
-    {
-        int index = getIndex();
-        
-        int tempHP = protester[index]->getHitpoints();
-        tempHP = tempHP - hitPoints;
-        protester[index]->setHitpoints(tempHP);
-        playSound(SOUND_PROTESTER_ANNOYED);
-        
-        cout << "P LIFE" << protester[index]->getHitpoints() << endl;
-        
-    }
-    bool ItemDoesNotExist(int itemX, int itemY);
-      void squirt(int xPassed, int yPassed, Actor::Direction dir);
+	bool ItemDoesNotExist(int itemX, int itemY);
 	bool distanceBtwObj(int itemX, int itemY);
+    void squirt(int xPassed, int yPassed, Actor::Direction dir);
 
 
     inline DiggerMan* getDiggerMan()
@@ -101,36 +80,14 @@ public:
     {
         return ticks;
     }
-    inline void setIndex(int index)
-    {
-        this->protesterIndex = index;
-    }
-    inline int getIndex()
-    {
-        return protesterIndex;
-    }
-    inline void decreaseOil()
-    {
-        m_oil--;
-    }
-    inline void increaseOilCollected()
-    {
-        m_oilCollected++;
-    }
 
-    
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
-    vector<Protester*> protester;
-    
     int ticks;
-    int protesterIndex;
     int m_level;
     int m_lives;
-    int m_oil;
-    int m_oilCollected;
 };
 
 #endif // STUDENTWORLD_H_

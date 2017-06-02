@@ -5,9 +5,6 @@
 
 using namespace std;
 
-const int exitPointX = 60;
-const int exitPointY = 60;
-
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 void Actor::doSomething()
 {}
@@ -16,10 +13,10 @@ void DiggerMan::doSomething()
 {
     //cout << "X: " << getX() << "| Y: " << getY() << endl;
     StudentWorld* world = getWorld();
-    //    cout << "DIRECTION: " << getDirection() << endl;
+//    cout << "DIRECTION: " << getDirection() << endl;
 
     int numValue = 0;
-
+    
     if (waitTime < 3)
     {
         waitTime++;
@@ -85,7 +82,7 @@ void DiggerMan::doSomething()
                 setDirection(down);
             }
         }
-        if (waitTime == 3)
+        if (waitTime == 3) //MAKES SURE THEY CANT SPAM SPACEBAR
         {
             if (numValue == KEY_PRESS_SPACE)
             {
@@ -94,171 +91,187 @@ void DiggerMan::doSomething()
                 waitTime = 0;
             }
         }
+        //For Sonar sound
+        if (numValue == 'z' && getSonar()>0)
+        {
+            decreaseSonar();
+            world->playSound(SOUND_SONAR);
+            
+            for (int i = 0; i < 13; i++)
+            {
+                for( int j = 0; j < 13; j++)
+                {
+                    world->checkItems(getX() + i, getY() + j);
+                }
+            }
+        }
     }
 }
 
 bool Boulder::isStable()
 {
-    StudentWorld* world = getWorld();
-    return world->checkDirtBelow(getX(), getY());
+	StudentWorld* world = getWorld();
+	return world->checkDirtBelow(getX(), getY());
 }
 
 void Boulder::doSomething()
 {
-    if (!isAlive())
-    {
-        return;
-    }
+	if (!isAlive())
+	{
+//		cout << "\tBoulder at " << getX() << "|" << getY() << " is dead\n";
+		return;
+	}
 
-    if (m_state != waiting && m_state != falling) //If boulder is in normal state
-    {
-        if (isStable())
-        {
-            m_state = stable;
-        }
-        else
-        {
-            m_state = waiting;
-        }
-    }
-    else if (waitTime < 30 && m_state == waiting)
-    {
-        waitTime++;
-        return;
-    }
-    else if (waitTime >= 30 && m_state == waiting)
-    {
-        waitTime = 0;
-        m_state = falling;
-        getWorld()->playSound(SOUND_FALLING_ROCK);
+	if (m_state != waiting && m_state != falling) //If boulder is in normal state
+	{
+		if (isStable())
+		{
+			m_state = stable;
+//			cout << "\tBoulder at " << getX() << "|" << getY() << " is stable\n";
+		}
+		else
+		{
+			m_state = waiting;
+//			cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting\n";
+		}
+//		cout << "-----------------------------------------\n";
+	}
+	else if (waitTime < 30 && m_state == waiting)
+	{
+		waitTime++;
+//		cout << "\tBoulder at " << getX() << "|" << getY() << " is waiting for " << waitTime << " ticks\n";
+		return;
+	}
+	else if (waitTime >= 30 && m_state == waiting)
+	{
+		waitTime = 0;
+		m_state = falling;
+//		cout << "\tBoulder at " << getX() << "|" << getY() << " is moving to a falling state\n";
+		getWorld()->playSound(SOUND_FALLING_ROCK);
 
-    }
-    else if (m_state == falling)
-    {
-        if (getWorld()->checkDirtBelow(getX(), getY()) || getY() < 1)
-        {
-            m_state = stable;
+	}
+	else if (m_state == falling)
+	{
+		//Move down one square each tick until it hits the bottom of the field
+		//Runs on top of another boulder
+		//Runs into dirt (By moving down a square the boulder would overlap
+		//Then must set state to dead so it can be removed from game
+//		cout << "\tBoulder at " << getX() << "|" << getY() << " is falling\n";
+
+		if (getWorld()->checkDirtBelow(getX(), getY()) || getY() < 1)
+		{
+			m_state = stable;
+			setHitpoints(0);
+//			cout << "\tBoulder at " << getX() << "|" << getY() << " is dead at the bottom\n";
+			//Boulder is now stable at the bottom and waits to get cleared at the end of the current tick
+		}
+
+		else if (getWorld()->checkBoulderBelow(getX(), getY()))
+		{
+			m_state = stable;
+			setHitpoints(0);
+//			cout << "\tBoulder at " << getX() << "|" << getY() << " hit another boulder\n";
+		}
+
+		else if (getWorld()->checkDiggermanBelow(getX(), getY())) //TODO: Fix radius of DiggerMan check
+		{
+			m_state = stable;
+			getWorld()->setDiggermanHP(0);
             setHitpoints(0);
-            //Boulder is now stable at the bottom on top of some dirt
-        }
+//			cout << "\t Boulder hit DiggerMan\n";
+		}
 
-        else if (getWorld()->checkBoulderBelow(getX(), getY()))
-        {
-            m_state = stable;
-            setHitpoints(0);
-        }
-
-        else if (getWorld()->checkDiggerman(getX(), getY(), down))
-        {
-            m_state = stable;
-            setHitpoints(0);
-            getWorld()->setDiggermanHP(0);
-            //Boulder is on top of diggerman
-        }
-
-        else
-        {
-            moveTo(getX(), (getY() - 1)); //If there isn't any dirt below it and not at the bottom, then keep falling
-        }
-    }
+		else
+		{
+			moveTo(getX(), (getY() - 1)); //If there isn't any dirt below it and not at the bottom, then keep falling
+		}
+	}
 }
-
 void WaterPool::doSomething()
+
 {
     StudentWorld* world = getWorld();
     DiggerMan* diggerMan = world->getDiggerMan();
-
+    
     int level = world->getLevel();
-
-
+    
+    
     //IMPLEMENTED 5/25/17 1:06 AM JOSEPH TICKS TO MAKE WATER POOL DISAPPEAR
     int t = max(100, 300 - 10 * level);
-
+    
     cout << "GAME TICKS: " << ticks << endl;
-    cout << "WATERPOOL TICKS TO GO AWAY: " << t << endl;
-
-    if (ticks == t)
-    {
+    cout << "WATERPOOL TICKS TO GO AWAY: " <<  t << endl;
+    
+    if (ticks == t) {
         setHitpoints(0);
         return;
     }
-
-    //    cout << "DIGGERMAN W LOC: " << diggerMan->getX() << endl;
-    //    cout << "DIGGERMAN W LOC: " << diggerMan->getY() << endl;
-    //    cout << "WATERPOOL LOC: " << getX() << endl;
-    //    cout << "WATERPOOL LOC: " << getY() << endl;
-
-
+    
     if (world->checkDiggerman(getX(), getY(), getDirection()))
     {
         setHitpoints(0);
         world->playSound(SOUND_GOT_GOODIE);
         diggerMan->addWater(5);
         world->increaseScore(100);
-
+        
     }
-
+    
     ticks++;
+    
+    
 }
+
 
 void Barrel::doSomething()
 {
     StudentWorld* world = getWorld();
-
+    
     if (!isAlive())
     {
         return;
     }
-
+    
+    if (world->barrelVisible(this->getX(), this->getY()))
+    {
+        setVisible(true);
+    }
+    
     if (this->isVisible() && world->checkDiggerman(this->getX(), this->getY(), this->getDirection()))
     {
         cout << "GOT OIL" << endl;
         setHitpoints(0);
         world->playSound(SOUND_FOUND_OIL);
         world->increaseScore(1000);
+        world->decreaseOil();
     }
 }
 
-//PROTESTER 
+//PROTESTER //IMPLEMENT NEXT
+
 void Protester::doSomething()
 {
+    StudentWorld* world = getWorld();
     if (!isAlive())
     {
-        getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
+        world->playSound(SOUND_PROTESTER_GIVE_UP);
+        
         return;
     }
+    
     if (waitingTime < tickToWaitBetweenMoves)
     {
         waitingTime++;
-        cout << "Waiting for " << waitingTime << " ticks \n";
-        return;
+        cout << "Waiting for " << waitingTime << "ticks \n";
     }
-
-    if (m_state == leaveOilField)
-    {
-        if (getX() == exitPointX && getY() == exitPointY) //if at the exit point
-        {
-            setHitpoints(0);
-            return;
-        }
-    }
-
-    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), down) && nonRestingTicks >= 50 && getWorld()->protesterFacingDiggerman(getX(), getY(), getDirection()))
-        //TODO: Check if 4 units from diggerman
-        //Might want to change the checkDiggerman function depending on what unit actually means
+    
+    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), getDirection()) && nonRestingTicks > 15) //Check if 4 units away from DiggerMan
     {
         waitingTime = 0;
         nonRestingTicks = 0;
         getWorld()->annoyDiggerman(2); //Cause 2 points of annoyance to diggerman
         getWorld()->playSound(SOUND_PROTESTER_YELL);
-        cout << "Protester yelled at Diggerman\n";
-        return;
+        cout << "Protester yelled at Diggerman";
     }
-
-    else if (getWorld()->getDiggerMan()->getX() == this->getX() || getWorld()->getDiggerMan()->getY() == this->getY()) //Check to see if diggerman is in a straight line from protester
-
-
-        nonRestingTicks++;
 }
 
 //SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
@@ -268,30 +281,27 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
     {
         return;
     }
-
-    StudentWorld* world = getWorld();
-    DiggerMan* diggerMan = world->getDiggerMan();
-
-
-    cout << "Water: " << diggerMan->getWater() << endl;
-
-
+    
+    
+	StudentWorld * world = getWorld();
+    
+    
     if (distanceTraveled == 3)
     {
         setHitpoints(0);
     }
-
+    
     if (world->checkProtester(getX(), getY(), right))
     {
         world->annoyProtester(1);
         setHitpoints(0);
     }
-
-
-
-
+    
+    
+    
+    
     //SQUIRT MOVEMENT
-    switch (getDirection())
+    switch(getDirection())
     {
         case up:
             if (world->checkDirt(getX(), getY() + 1) == false)
@@ -303,7 +313,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             {
                 setHitpoints(0);
             }
-
+            
             return;
         case down:
             if (world->checkDirt(getX(), getY() - 1) == false)
@@ -315,7 +325,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             {
                 setHitpoints(0);
             }
-
+            
             return;
         case left:
             if (world->checkDirt(getX() - 1, getY()) == false)
@@ -327,10 +337,10 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             {
                 setHitpoints(0);
             }
-
+            
             return;
-
-        case right:
+            
+        case right: 
             if (world->checkDirt(getX() + 1, getY()) == false)
             {
                 moveTo(getX() + 1, getY());
@@ -340,10 +350,40 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
             {
                 setHitpoints(0);
             }
-
+            
             return;
-
+            
         default: setHitpoints(0);
             return;
     }
+}
+void SonarKit::doSomething()
+{
+    StudentWorld* world = getWorld();
+    DiggerMan* diggerman = world->getDiggerMan();
+    
+    if (!isAlive())
+        return;
+    
+    int t = max(100, 300 - 10*world->getLevel());
+    
+    if (ticks == t) {
+        setHitpoints(0);
+        return;
+    }
+    
+    cout << "GAME TICKS: " << ticks << endl;
+    cout << "SONAR TICKS TO GO AWAY: " <<  t << endl;
+    
+    if (this->isVisible() && world->checkDiggerman(this->getX(), this->getY(), this->getDirection()))
+    {
+        cout << "GOT SONAR KIT" << endl;
+        setHitpoints(0);
+        world->playSound(SOUND_GOT_GOODIE);
+        world->increaseScore(75);
+        diggerman->increaseSonar();
+    }
+    
+    ticks++;
+    
 }

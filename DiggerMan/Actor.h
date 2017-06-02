@@ -14,12 +14,19 @@ enum BoulderState
 {
     stable, falling, waiting
 };
+enum GoldNuggetState
+{
+	sleep, awake
+};
 
 enum ProtesterState
 {
-    rest, leaveOilField, dead
+    rest, leaveOilField
 };
-
+enum SonarState
+{
+    
+};
 class Actor : public GraphObject
 {
 public:
@@ -62,13 +69,13 @@ public:
     {
         setVisible(true);
         m_water = 50;
+        m_sonarCharges = 900;
     }
 
     virtual void doSomething();
     
     
     inline int getWater()
-    
     {
         return m_water;
     }
@@ -79,6 +86,18 @@ public:
     inline void addWater(int water)
     {
         m_water+=water;
+    }
+    inline int getSonar()
+    {
+        return m_sonarCharges;
+    }
+    inline void increaseSonar()
+    {
+        m_sonarCharges++;
+    }
+    inline void decreaseSonar()
+    {
+        m_sonarCharges--;
     }
     inline void reduceWater()
     {
@@ -140,9 +159,9 @@ class Barrel : public Actor
 {
 public:
     Barrel(StudentWorld * world, int startX, int startY)
-        : Actor(world, IMID_BARREL, startX, startY, right, 1.0, 2)
+        : Actor(world, IMID_BARREL, 35, 60, right, 1.0, 2)
     {
-        setVisible(true); //Barrels should start hidden and only be discovered when walked over
+        setVisible(false); //Barrels should start hidden and only be discovered when walked over
     }
     
     virtual void doSomething();
@@ -155,8 +174,17 @@ public:
     GoldNugget(StudentWorld * world, int startX, int startY)
         : Actor(world, IMID_GOLD, startX, startY, right, 1.0, 2)
     {
+		this->m_state = sleep;
         setVisible(true);
     }
+	void doSomething();
+	bool isStable();
+private:
+	GoldNuggetState m_state;
+//	unsigned int nearBy = 
+
+
+
 };
 
 class Boulder : public Actor
@@ -202,6 +230,7 @@ public:
     }
     
 private:
+
     unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
     unsigned int waitingTime = 0;
     unsigned int nonRestingTicks = 0;
@@ -216,13 +245,30 @@ public:
         :Actor(world, IMID_WATER_POOL, startX, startY, right, 1.0, 2)
     {
         setVisible(true);
+        ticks = 0;
         
     }
     
     virtual void doSomething();
+    
 private:
-    unsigned int ticks;
+    int ticks;
+};
 
+class SonarKit: public Actor
+{
+public:
+    SonarKit(StudentWorld* world, int startX, int startY)
+        :Actor(world, IMID_SONAR, startX, startY, right, 1.0, 2)
+    {
+        setVisible(true);
+        ticks = 0;
+    }
+    
+    void doSomething();
+    
+private:
+    int ticks;
 };
 
 class HardcoreProtester : public Protester

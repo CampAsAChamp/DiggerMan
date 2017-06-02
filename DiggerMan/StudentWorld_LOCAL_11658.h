@@ -36,10 +36,9 @@ public:
         : GameWorld(assetDir)
     {
         ticks = 0;
-        m_level = 1;
+        m_level = 0;
         m_lives = 3;
         protesterIndex = 0;
-        m_oilCollected = 0;
     }
 
     void setGameText();
@@ -52,14 +51,11 @@ public:
     void deleteDirt(int xPassed, int yPassed); 
     //bool checkActorBelow(int xPassed, int yPassed, int IMID);
 	bool checkBoulderBelow(int xPassed, int yPassed);
-
     bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
-    bool barrelVisible(int xPassed, int yPassed);
 	bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
     bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
-    void checkItems(int xPassed, int yPassed);
     
     
     
@@ -86,8 +82,6 @@ public:
     }
     bool ItemDoesNotExist(int itemX, int itemY);
       void squirt(int xPassed, int yPassed, Actor::Direction dir);
-	bool distanceBtwObj(int itemX, int itemY);
-
 
     inline DiggerMan* getDiggerMan()
     {
@@ -109,14 +103,6 @@ public:
     {
         return protesterIndex;
     }
-    inline void decreaseOil()
-    {
-        m_oil--;
-    }
-    inline void increaseOilCollected()
-    {
-        m_oilCollected++;
-    }
 
     
 private:
@@ -129,8 +115,6 @@ private:
     int protesterIndex;
     int m_level;
     int m_lives;
-    int m_oil;
-    int m_oilCollected;
 };
 
 #endif // STUDENTWORLD_H_
