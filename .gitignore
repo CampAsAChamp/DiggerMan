@@ -25,5 +25,9 @@ DiggerMan.sln
 .vs/*
 DiggerMan.v12.suo
 DiggerMan.xcodeproj
+DiggerMan/StudentWorld_BACKUP_11658.h
+DiggerMan/StudentWorld_BASE_11658.h
+DiggerMan/StudentWorld_LOCAL_11658.h
+DiggerMan/StudentWorld_REMOTE_11658.h
 
 
