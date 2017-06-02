@@ -27,8 +27,6 @@ void StudentWorld::setGameText()
 
 int StudentWorld::init()
 {
-    if (m_lives == 3)
-    {
         m_diggerman = new DiggerMan(this);
         srand(time(NULL));
         
@@ -117,7 +115,7 @@ int StudentWorld::init()
             }
         }
         
-    }
+    
 
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -286,13 +284,11 @@ void StudentWorld::removeDeadActors()
     
     for (int h = 0; h < protester.size(); h++)
     {
-        if (protester[h] != nullptr && !protester[h]->isAlive())
+        if (protester[h] != nullptr && protester[h]->getState() == dead)
         {
-            protester[h]->setState(leaveOilField);
-            protester[h]->setVisible(false);
             cout << "\tDeleted protester at at " << protester[h]->getX() << " | " << protester[h]->getY() << endl;
+            protester[h]->setVisible(false);
             delete protester[h];
-            playSound(SOUND_PROTESTER_GIVE_UP);
             protester[h] = nullptr;
             
         }
@@ -372,7 +368,19 @@ int StudentWorld::move()
 			}
 		}
 	}
-	removeDeadActors(); //Checks every tick to remove the actors that are dead
+    
+    for (size_t h = 0; h < protester.size(); h++)
+    {
+        if (protester[h] != nullptr)
+        {
+            protester[h]->doSomething();
+        }
+        else
+        {
+            continue;
+        }
+    }
+    
     
     if (!m_diggerman->isAlive())
     {
@@ -382,6 +390,8 @@ int StudentWorld::move()
         
         return GWSTATUS_PLAYER_DIED;
     }
+    removeDeadActors(); //Checks every tick to remove the actors that are dead
+    
     
     if (m_oilCollected == m_oil)
     {
@@ -542,24 +552,65 @@ bool StudentWorld::checkProtester(int xPassed, int yPassed, Protester::Direction
     
     return protesterFound;
 }
+bool StudentWorld::protesterCheckDiggerman(int xPassed, int yPassed)
+{
+    bool diggermanFound = false;
+    
+    //Check Above
+    for (int i = 1; i < 8; i++) //Checking if diggerman is 4 units away
+    {
+        if (xPassed + i == m_diggerman->getX() && yPassed == m_diggerman->getY())
+            return true;
+        else if (xPassed - i == m_diggerman->getX() && yPassed == m_diggerman->getY())
+            return true;
+        else if (xPassed == m_diggerman->getX() && yPassed + i == m_diggerman->getY())
+            return true;
+        else if (xPassed == m_diggerman->getX() && yPassed - i == m_diggerman->getY())
+            return true;
+    }
+    
+    return diggermanFound;
+}
+
+bool StudentWorld::protesterFacingDiggerman(int xPassed, int yPassed, Protester::Direction dir)
+{
+    //Protester is looking to the
+    switch (dir)
+    {
+        case Protester::up:
+            return yPassed < m_diggerman->getY();
+            
+        case Protester::down:
+            return yPassed > m_diggerman->getY();
+            
+        case Protester::left:
+            return xPassed > m_diggerman->getX();
+            
+        case Protester::right:
+            return xPassed < m_diggerman->getX();
+            
+        default:
+            return false;
+    }
+}
 void StudentWorld::checkItems(int xPassed, int yPassed)
 {
     for (int x = 0; x < MAXSIZE_X; x++)
     {
         for (int y = 0; y < MAXSIZE_Y; y++)
         {
-            for (int i = 0; i < 13; i++)
+            for (int i = 1; i < 13; i++)
             {
                 if (m_actor[x][y] != 0)
                 {
-                if (xPassed + i == m_actor[x][y]->getX() && yPassed == m_actor[x][y]->getY())
-                    m_actor[x][y]->setVisible(true);
-                else if (xPassed - i == m_actor[x][y]->getX() && yPassed == m_actor[x][y]->getY())
-                    m_actor[x][y]->setVisible(true);
-                else if (xPassed == m_actor[x][y]->getX() && yPassed + i == m_actor[x][y]->getY())
-                    m_actor[x][y]->setVisible(true);
-                else if (xPassed == m_actor[x][y]->getX() && yPassed - i == m_actor[x][y]->getY())
-                    m_actor[x][y]->setVisible(true);
+                    if (xPassed + i == m_actor[x][y]->getX() && yPassed == m_actor[x][y]->getY())
+                        m_actor[x][y]->setVisible(true);
+                    else if (xPassed - i == m_actor[x][y]->getX() && yPassed == m_actor[x][y]->getY())
+                        m_actor[x][y]->setVisible(true);
+                    else if (xPassed == m_actor[x][y]->getX() && yPassed + i == m_actor[x][y]->getY())
+                        m_actor[x][y]->setVisible(true);
+                    else if (xPassed == m_actor[x][y]->getX() && yPassed - i == m_actor[x][y]->getY())
+                        m_actor[x][y]->setVisible(true);
                 }
                 else
                 {

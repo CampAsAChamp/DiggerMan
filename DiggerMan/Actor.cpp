@@ -5,6 +5,11 @@
 
 using namespace std;
 
+
+const int exitPointX = 60;
+const int exitPointY = 60;
+
+
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 void Actor::doSomething()
 {}
@@ -97,12 +102,10 @@ void DiggerMan::doSomething()
             decreaseSonar();
             world->playSound(SOUND_SONAR);
             
-            for (int i = 0; i < 13; i++)
+            for (int i = 1; i < 13; i++)
             {
-                for( int j = 0; j < 13; j++)
-                {
-                    world->checkItems(getX() + i, getY() + j);
-                }
+                world->checkItems(getX() + i, getY());
+                world->checkItems(getX() - i, getY());
             }
         }
     }
@@ -250,28 +253,69 @@ void Barrel::doSomething()
 
 void Protester::doSomething()
 {
-    StudentWorld* world = getWorld();
-    if (!isAlive())
+    if (!isAlive() && m_state != leaveOilField)
     {
-        world->playSound(SOUND_PROTESTER_GIVE_UP);
-        
+        getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
+        setState(leaveOilField);
         return;
     }
     
     if (waitingTime < tickToWaitBetweenMoves)
     {
         waitingTime++;
-        cout << "Waiting for " << waitingTime << "ticks \n";
+        cout << "Waiting for " << waitingTime << " ticks \n";
+        return;
     }
     
-    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), getDirection()) && nonRestingTicks > 15) //Check if 4 units away from DiggerMan
+   //LEAVING OIL FIELD HANDLER////
+    if (m_state == leaveOilField)
+    {
+        if(getY() <= 60-1)
+        {
+            moveTo(getX(), getY()+1);
+            return;
+        }
+        
+        if(getX() <= 60-1)
+        {
+            moveTo(getX()+1, getY());
+            return;
+        }
+        
+        if (getX() == 60 && getY() == 60)
+        {
+            setHitpoints(0);
+            setState(dead);
+        }
+        
+    }
+    
+    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), down) && nonRestingTicks >= 15 && getWorld()->protesterFacingDiggerman(getX(), getY(), getDirection()))
+        //TODO: Check if 4 units from diggerman
+        //Might want to change the checkDiggerman function depending on what unit actually means
     {
         waitingTime = 0;
         nonRestingTicks = 0;
         getWorld()->annoyDiggerman(2); //Cause 2 points of annoyance to diggerman
         getWorld()->playSound(SOUND_PROTESTER_YELL);
-        cout << "Protester yelled at Diggerman";
+        cout << "Protester yelled at Diggerman\n";
+        return;
     }
+    
+    int counterX = getX();
+    int counterY = getY();
+    
+    for (int i = 0; i <= 4; i++)
+    {
+            
+            if (getWorld()->getDiggerMan()->getX() == this->getX() || (getWorld()->getDiggerMan()->getY() == this->getY() && !getWorld()->checkDiggerman(counterX + i, counterY, down))) //Check to see if diggerman is in a straight line from protester
+            {
+                getWorld()->playSound(SOUND_PROTESTER_YELL);
+                cout << "Diggerman in line of shight 4 \n";
+            }
+        
+    }
+    nonRestingTicks++;
 }
 
 //SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED

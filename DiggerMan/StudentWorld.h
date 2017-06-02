@@ -60,6 +60,8 @@ public:
     bool checkDirtBelow(int xPassed, int yPassed);
     bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
     void checkItems(int xPassed, int yPassed);
+    bool protesterCheckDiggerman(int xPassed, int yPassed);
+    bool protesterFacingDiggerman(int xPassed, int yPassed, Protester::Direction dir);
     
     
     

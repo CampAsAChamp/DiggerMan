@@ -21,7 +21,7 @@ enum GoldNuggetState
 
 enum ProtesterState
 {
-    rest, leaveOilField
+    rest, leaveOilField, dead, start
 };
 enum SonarState
 {
@@ -159,7 +159,7 @@ class Barrel : public Actor
 {
 public:
     Barrel(StudentWorld * world, int startX, int startY)
-        : Actor(world, IMID_BARREL, 35, 60, right, 1.0, 2)
+        : Actor(world, IMID_BARREL, 35, 50, right, 1.0, 2)
     {
         setVisible(false); //Barrels should start hidden and only be discovered when walked over
     }
@@ -216,10 +216,11 @@ class Protester : public Actor
 public:
     
     Protester(StudentWorld * world, int startX, int startY)
-    :Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+    :Actor(world, IMID_PROTESTER, 20, 50, left, 1.0, 0)
     {
         setVisible(true);
         setHitpoints(5);
+        m_state = start;
     }
     
     void doSomething();
