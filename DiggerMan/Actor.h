@@ -17,7 +17,7 @@ enum BoulderState
 
 enum ProtesterState
 {
-    rest, leaveOilField
+    rest, leaveOilField, dead
 };
 
 class Actor : public GraphObject

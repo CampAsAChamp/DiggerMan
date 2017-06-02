@@ -56,6 +56,8 @@ public:
     bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
     bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
+    bool protesterCheckDiggerman(int xPassed, int yPassed);
+    bool protesterFacingDiggerman(int xPassed, int yPassed, Protester::Direction dir);
 	void setDiggermanHP(int hitPoints);
     inline void annoyDiggerman(int hitPoints)
     {
@@ -67,7 +69,7 @@ public:
     inline void annoyProtester(int hitPoints)
     {
         int index = getIndex();
-        
+
         int tempHP = protester[index]->getHitpoints();
         tempHP = tempHP - hitPoints;
         protester[index]->setHitpoints(tempHP);
