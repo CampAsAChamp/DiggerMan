@@ -281,6 +281,9 @@ void StudentWorld::removeDeadActors()
             protester[h]->setState(leaveOilField);
             protester[h]->setVisible(false);
             cout << "\tDeleted protester at at " << protester[h]->getX() << " | " << protester[h]->getY() << endl;
+            delete protester[h];
+            playSound(SOUND_PROTESTER_GIVE_UP);
+            protester[h] = nullptr;
         }
         else
         {
@@ -525,8 +528,6 @@ bool StudentWorld::protesterFacingDiggerman(int xPassed, int yPassed, Protester:
     }
 }
 
-
-//*****BUGGY***** NOT SURE IF WORKS
 bool StudentWorld::checkProtester(int xPassed, int yPassed, Protester::Direction dir)
 {
     bool protesterFound = false;

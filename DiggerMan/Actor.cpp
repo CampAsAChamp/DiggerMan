@@ -174,7 +174,10 @@ void WaterPool::doSomething()
     //IMPLEMENTED 5/25/17 1:06 AM JOSEPH TICKS TO MAKE WATER POOL DISAPPEAR
     int t = max(100, 300 - 10 * level);
 
-    if (world->getTicks() == t)
+    cout << "GAME TICKS: " << ticks << endl;
+    cout << "WATERPOOL TICKS TO GO AWAY: " << t << endl;
+
+    if (ticks == t)
     {
         setHitpoints(0);
         return;
@@ -194,6 +197,8 @@ void WaterPool::doSomething()
         world->increaseScore(100);
 
     }
+
+    ticks++;
 }
 
 void Barrel::doSomething()
@@ -218,8 +223,10 @@ void Barrel::doSomething()
 void Protester::doSomething()
 {
     if (!isAlive())
+    {
+        getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
         return;
-
+    }
     if (waitingTime < tickToWaitBetweenMoves)
     {
         waitingTime++;
@@ -236,7 +243,7 @@ void Protester::doSomething()
         }
     }
 
-    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(),getY(), down) && nonRestingTicks >= 50 && getWorld()->protesterFacingDiggerman(getX(),getY(),getDirection())) 
+    else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), down) && nonRestingTicks >= 50 && getWorld()->protesterFacingDiggerman(getX(), getY(), getDirection()))
         //TODO: Check if 4 units from diggerman
         //Might want to change the checkDiggerman function depending on what unit actually means
     {
@@ -251,7 +258,7 @@ void Protester::doSomething()
     else if (getWorld()->getDiggerMan()->getX() == this->getX() || getWorld()->getDiggerMan()->getY() == this->getY()) //Check to see if diggerman is in a straight line from protester
 
 
-    nonRestingTicks++;
+        nonRestingTicks++;
 }
 
 //SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
@@ -277,6 +284,7 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
     if (world->checkProtester(getX(), getY(), right))
     {
         world->annoyProtester(1);
+        setHitpoints(0);
     }
 
 

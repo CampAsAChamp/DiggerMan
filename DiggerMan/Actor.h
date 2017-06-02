@@ -220,6 +220,9 @@ public:
     }
     
     virtual void doSomething();
+private:
+    unsigned int ticks;
+
 };
 
 class HardcoreProtester : public Protester
