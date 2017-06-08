@@ -14,10 +14,18 @@ enum BoulderState
 {
     stable, falling, waiting
 };
+enum GoldNuggetState
+{
+    sleep, awake
+};
 
 enum ProtesterState
 {
-    rest, leaveOilField, dead
+    rest, leaveOilField, dead, start
+};
+enum SonarState
+{
+
 };
 
 class Actor : public GraphObject
@@ -62,13 +70,25 @@ public:
     {
         setVisible(true);
         m_water = 50;
+        m_goldNuggets = 0;
+        m_sonarCharges = 900;
     }
 
     virtual void doSomething();
-    
-    
+
+    inline int getGold()
+    {
+        return m_goldNuggets;
+    }
+    inline void decreaseGold()
+    {
+        m_goldNuggets--;
+    }
+    inline void increaseGold()
+    {
+        m_goldNuggets++;
+    }
     inline int getWater()
-    
     {
         return m_water;
     }
@@ -78,18 +98,29 @@ public:
     }
     inline void addWater(int water)
     {
-        m_water+=water;
+        m_water += water;
+    }
+    inline int getSonar()
+    {
+        return m_sonarCharges;
+    }
+    inline void increaseSonar()
+    {
+        m_sonarCharges++;
+    }
+    inline void decreaseSonar()
+    {
+        m_sonarCharges--;
     }
     inline void reduceWater()
     {
         m_water--;
     }
-    
+
     inline DiggerMan* getDiggerMan()
     {
         return this;
     }
-
     virtual StudentWorld* getWorld()
     {
         return Actor::getWorld();
@@ -105,22 +136,22 @@ private:
 class Squirt : public Actor
 {
 public:
-    
+
     Squirt(StudentWorld* world, int startX, int startY, Direction dir)
-    : Actor(world, IMID_WATER_SPURT, startX, startY, dir, 1.0, 1)
+        : Actor(world, IMID_WATER_SPURT, startX, startY, dir, 1.0, 1)
     {
         setVisible(true);
         distanceTraveled = 0;
     }
-    
+
     virtual void doSomething();
-    
+
 private:
-    
+
     int distanceTraveled;
     unsigned int waitTime = 0;
-    
-    
+
+
 };
 
 class Dirt : public Actor
@@ -142,11 +173,11 @@ public:
     Barrel(StudentWorld * world, int startX, int startY)
         : Actor(world, IMID_BARREL, startX, startY, right, 1.0, 2)
     {
-        setVisible(true); //Barrels should start hidden and only be discovered when walked over
+        setVisible(false); //Barrels should start hidden and only be discovered when walked over
     }
-    
+
     virtual void doSomething();
-    
+
 };
 
 class GoldNugget : public Actor
@@ -155,8 +186,18 @@ public:
     GoldNugget(StudentWorld * world, int startX, int startY)
         : Actor(world, IMID_GOLD, startX, startY, right, 1.0, 2)
     {
-        setVisible(true);
+        this->m_state = sleep;
+        setVisible(false);
     }
+
+    void doSomething();
+    bool isStable();
+private:
+    GoldNuggetState m_state;
+    //	unsigned int nearBy = 
+
+
+
 };
 
 class Boulder : public Actor
@@ -173,7 +214,7 @@ public:
     void doSomething();
     bool isStable();
     BoulderState getState()
-    
+
     {
         return m_state;
     }
@@ -186,43 +227,67 @@ private:
 class Protester : public Actor
 {
 public:
-    
+
     Protester(StudentWorld * world, int startX, int startY)
-    :Actor(world, IMID_PROTESTER, startX, startY, left, 1.0, 0)
+        :Actor(world, IMID_PROTESTER, 60, 60, left, 1.0, 0)
     {
         setVisible(true);
         setHitpoints(5);
+        m_state = start;
+        tickToWaitBetweenMoves = 0;
+        ticks = 0;
+        step = false;
     }
-    
+
     void doSomething();
     ProtesterState getState() { return m_state; }
     void setState(ProtesterState state)
     {
         m_state = state;
     }
-    
+
 private:
-    unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+
+    unsigned int tickToWaitBetweenMoves;
     unsigned int waitingTime = 0;
     unsigned int nonRestingTicks = 0;
-    
+    unsigned int ticks;
+    bool step;
+
     ProtesterState m_state;
 };
 
-class WaterPool: public Actor
+class WaterPool : public Actor
 {
 public:
     WaterPool(StudentWorld* world, int startX, int startY)
         :Actor(world, IMID_WATER_POOL, startX, startY, right, 1.0, 2)
     {
         setVisible(true);
-        
-    }
-    
-    virtual void doSomething();
-private:
-    unsigned int ticks;
+        ticks = 0;
 
+    }
+
+    virtual void doSomething();
+
+private:
+    int ticks;
+};
+
+class SonarKit : public Actor
+{
+public:
+    SonarKit(StudentWorld* world, int startX, int startY)
+        :Actor(world, IMID_SONAR, startX, startY, right, 1.0, 2)
+    {
+        setVisible(true);
+        ticks = 0;
+    }
+
+    void doSomething();
+
+private:
+    int ticks;
 };
 
 class HardcoreProtester : public Protester

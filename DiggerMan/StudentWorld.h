@@ -36,9 +36,10 @@ public:
         : GameWorld(assetDir)
     {
         ticks = 0;
-        m_level = 0;
+        m_level = 1;
         m_lives = 3;
         protesterIndex = 0;
+        m_oilCollected = 0;
     }
 
     void setGameText();
@@ -46,26 +47,29 @@ public:
     virtual int move();
     virtual void cleanUp();
 
-	void removeDeadActors();
+    void removeDeadActors();
 
-    void deleteDirt(int xPassed, int yPassed); 
+    void deleteDirt(int xPassed, int yPassed);
     //bool checkActorBelow(int xPassed, int yPassed, int IMID);
-	bool checkBoulderBelow(int xPassed, int yPassed);
+    bool checkBoulderBelow(int xPassed, int yPassed);
+
     bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
-	bool checkDiggermanBelow(int xPassed, int yPassed);
+    bool barrelVisible(int xPassed, int yPassed);
+    bool checkDiggermanBelow(int xPassed, int yPassed);
     bool checkDirt(int xPassed, int yPassed);
     bool checkDirtBelow(int xPassed, int yPassed);
     bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
+    void checkItems(int xPassed, int yPassed);
     bool protesterCheckDiggerman(int xPassed, int yPassed);
     bool protesterFacingDiggerman(int xPassed, int yPassed, Protester::Direction dir);
-	void setDiggermanHP(int hitPoints);
+
+    void setDiggermanHP(int hitPoints);
     inline void annoyDiggerman(int hitPoints)
     {
         int tempHP = m_diggerman->getHitpoints();
         tempHP = tempHP - hitPoints;
         m_diggerman->setHitpoints(tempHP);
     }
-    
     inline void annoyProtester(int hitPoints)
     {
         int index = getIndex();
@@ -74,12 +78,14 @@ public:
         tempHP = tempHP - hitPoints;
         protester[index]->setHitpoints(tempHP);
         playSound(SOUND_PROTESTER_ANNOYED);
-        
+
         cout << "P LIFE" << protester[index]->getHitpoints() << endl;
-        
+
     }
+
     bool ItemDoesNotExist(int itemX, int itemY);
-      void squirt(int xPassed, int yPassed, Actor::Direction dir);
+    void squirt(int xPassed, int yPassed, Actor::Direction dir);
+    bool distanceBtwObj(int itemX, int itemY);
 
     inline DiggerMan* getDiggerMan()
     {
@@ -101,18 +107,33 @@ public:
     {
         return protesterIndex;
     }
+    inline Protester* getProtester()
+    {
+        return protester[protesterIndex];
+    }
 
-    
+    inline void decreaseOil()
+    {
+        m_oil--;
+    }
+    inline void increaseOilCollected()
+    {
+        m_oilCollected++;
+    }
+
+
 private:
     Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
     Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
     DiggerMan* m_diggerman;
     vector<Protester*> protester;
-    
+
     int ticks;
     int protesterIndex;
     int m_level;
     int m_lives;
+    int m_oil;
+    int m_oilCollected;
 };
 
 #endif // STUDENTWORLD_H_
