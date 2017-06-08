@@ -111,6 +111,11 @@ public:
     {
         return protesterIndex;
     }
+    inline Protester* getProtester()
+    {
+        return protester[protesterIndex];
+    }
+    
     inline void decreaseOil()
     {
         m_oil--;

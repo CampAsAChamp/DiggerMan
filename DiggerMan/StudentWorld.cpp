@@ -18,7 +18,7 @@ void StudentWorld::setGameText()
 {
 
 	ostringstream oss;
-    oss << "Level: " << m_level <<  " Lives: " << m_lives << " Health: " << "Water: " << m_diggerman->getWater() << " Gold: " << "Sonar: " << m_diggerman->getSonar() << " Oil Left: " << m_oil << " Score: " << getScore() << endl;
+    oss << "Level: " << m_level <<  " Lives: " << m_lives << " Health: " << "Water: " << m_diggerman->getWater() << " Gold: " << m_diggerman->getGold() << " Sonar: " << m_diggerman->getSonar() << " Oil Left: " << m_oil << " Score: " << getScore() << endl;
 
     string text = oss.str();
     
@@ -36,18 +36,28 @@ int StudentWorld::init()
         int barrelX = rand()%MAXSIZE_X;
         int barrelY = rand()%MAXSIZE_Y + Y_OFFSET;
         
-        int pX= rand()%MAXSIZE_X;
-        int pY = rand()%MAXSIZE_Y - Y_OFFSET;
+        int pX= 60;
+        int pY = 60;
+    
+        int gX = rand()%MAXSIZE_X;
+        int gY = rand()%MAXSIZE_Y - Y_OFFSET;
         
         
-//        m_actor[pX][pY] = new Protester(this, pX, pY);
-        
+        double Pnum = min(15.0, 2.0 + m_level * 1.5);
+
+    
+    for (int i = 0; i < Pnum; i++)
+    {
         protester.push_back(new Protester(this, pX, pY));
-        
+    }
+    
         
         m_oil = min(2 + m_level, 18); //BARREL NUMBER SPAWN
         int boulderAtLVL = min(m_level / 2 + 2, 7);
-
+    
+    
+    //DIRT INITIALIZATION
+    
         for (int i = 0; i < MAXSIZE_X; i++) //VERTICAL AXIS (X-Axis)
         {
             for (int j = 0; j < (MAXSIZE_Y); j++) //HORIZONTAL AXIS (Y-Axis)
@@ -78,7 +88,6 @@ int StudentWorld::init()
         }
 
         //BARREL HANDLER
-        //*****BUGGY****** SOMETIMES FREEZES UP ON STARTUP
         for (int i = 0; i < m_oil; i++)
         {
             
@@ -114,14 +123,33 @@ int StudentWorld::init()
                 i--;
             }
         }
+    
+    //GOLD NUGGET HANDLER
+    
+    for (int i = 0; i < m_oil; i++)
+    {
         
+        if (gX < (MAXSIZE_X - X_BOUND_RIGHT) && gY < (MAXSIZE_Y - Y_BOUND_TOP) && ItemDoesNotExist(gX, gY))
+        {
+            m_actor[gX][gY] = new GoldNugget(this, gX, gY);
+            gX = rand()%MAXSIZE_X;
+            gY = rand()%MAXSIZE_Y + Y_BOUND_TOP;
+            
+        }
+        else
+        {
+            gX = rand() % MAXSIZE_X;
+            gY = rand() % MAXSIZE_Y + Y_BOUND_TOP;
+            i--;
+        }
+    }
+    
     
 
 	return GWSTATUS_CONTINUE_GAME;
 }
 bool StudentWorld::ItemDoesNotExist(int itemX, int itemY)
 {
-    
 	bool objectDoesNotExist = false;
 
 	for (int x = itemX; x < (itemX + 4); x++)
@@ -192,6 +220,7 @@ bool StudentWorld::checkDirtBelow(int xPassed, int yPassed)
 bool StudentWorld::checkDirt(int xPassed, int yPassed)
 {
     bool dirtFound = true;
+    
     
     if (xPassed > 0 && xPassed < MAXSIZE_X && yPassed > 0 && yPassed < MAXSIZE_Y)
     {
@@ -288,6 +317,7 @@ void StudentWorld::removeDeadActors()
         {
             cout << "\tDeleted protester at at " << protester[h]->getX() << " | " << protester[h]->getY() << endl;
             protester[h]->setVisible(false);
+            playSound(SOUND_PROTESTER_GIVE_UP);
             delete protester[h];
             protester[h] = nullptr;
             
@@ -717,3 +747,5 @@ void StudentWorld::cleanUp()
     }
 
 }
+
+

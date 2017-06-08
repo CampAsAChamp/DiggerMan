@@ -6,10 +6,6 @@
 using namespace std;
 
 
-const int exitPointX = 60;
-const int exitPointY = 60;
-
-
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 void Actor::doSomething()
 {}
@@ -27,6 +23,7 @@ void DiggerMan::doSomething()
         waitTime++;
         return;
     }
+    
 
     //////////MOVE HANDLER//////////
     if (world->getKey(numValue))
@@ -255,7 +252,6 @@ void Protester::doSomething()
 {
     if (!isAlive() && m_state != leaveOilField)
     {
-        getWorld()->playSound(SOUND_PROTESTER_GIVE_UP);
         setState(leaveOilField);
         return;
     }
@@ -267,18 +263,22 @@ void Protester::doSomething()
         return;
     }
     
+    tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+    
    //LEAVING OIL FIELD HANDLER////
     if (m_state == leaveOilField)
     {
         if(getY() <= 60-1)
         {
             moveTo(getX(), getY()+1);
+            setDirection(up);
             return;
         }
         
         if(getX() <= 60-1)
         {
             moveTo(getX()+1, getY());
+            setDirection(right);
             return;
         }
         
@@ -288,6 +288,12 @@ void Protester::doSomething()
             setState(dead);
         }
         
+    }
+    
+    if (ticks < 7)
+    {
+        ticks++;
+        return;
     }
     
     else if (waitingTime >= tickToWaitBetweenMoves && getWorld()->checkDiggerman(getX(), getY(), down) && nonRestingTicks >= 15 && getWorld()->protesterFacingDiggerman(getX(), getY(), getDirection()))
@@ -307,15 +313,139 @@ void Protester::doSomething()
     
     for (int i = 0; i <= 4; i++)
     {
-            
             if (getWorld()->getDiggerMan()->getX() == this->getX() || (getWorld()->getDiggerMan()->getY() == this->getY() && !getWorld()->checkDiggerman(counterX + i, counterY, down))) //Check to see if diggerman is in a straight line from protester
             {
-                getWorld()->playSound(SOUND_PROTESTER_YELL);
                 cout << "Diggerman in line of shight 4 \n";
             }
-        
     }
     nonRestingTicks++;
+    
+    
+    //PROTESTER GETTING A RANDOM DIRECTION
+    int done = false;
+    
+    
+    cout << "TICKS: " << ticks << endl;
+    cout << "TICKS TO WAIT: " << tickToWaitBetweenMoves << endl;
+    
+    
+    while (!done)
+    {
+        int randomNum = rand()%4;
+        
+       switch (randomNum)
+        {
+            case 0:
+                setDirection(up);
+                done = true;
+                ticks = 0;
+                break;
+            case 1:
+                setDirection(down);
+                done = true;
+                ticks = 0;
+                break;
+            case 2:
+                setDirection(left);
+                done = true;
+                ticks = 0;
+                break;
+            case 3:
+                setDirection(right);
+                done = true;
+                ticks = 0;
+                break;
+            default:
+                break;
+                
+        }
+    }
+    
+    
+
+    //PROTESTER MOVING
+    if (ticks == 0 )
+    {
+    if (getX() == MAXSIZE_X - 5)
+    {
+        moveTo(getX() + 1, getY());
+        setDirection(left);
+    }
+        if (getX() == 0)
+        {
+            moveTo(getX() + 1, getY());
+            setDirection(left);
+        }
+        if (getX() == 60)
+        {
+            moveTo(getX() - 1, getY());
+            setDirection(left);
+        }
+        if (getY() == 60)
+        {
+            moveTo(getX(), getY() -1);
+            setDirection(down);
+        }
+        
+
+    //MOVING
+    
+    if (getDirection() == right && getX() <= MAXSIZE_X - 5 && !getWorld()->checkDirt(getX(), getY()))
+    {
+        moveTo(getX() + 1, getY());
+        step = false;
+        return;
+    }
+        else
+        {
+            ticks++;
+            step = true;
+        }
+    if (getDirection() == down  && getY() >= 1 && !getWorld()->checkDirt(getX(), getY()))
+    {
+        moveTo(getX(), getY()-1);
+        step = false;
+        return;
+    }
+        else
+        {
+            ticks++;
+            step = true;
+        }
+    if (getDirection() == up && getY() <= MAXSIZE_Y - 5 && !getWorld()->checkDirt(getX(), getY()))
+    {
+        moveTo(getX(), getY() + 1);
+        step = false;
+        return;
+    }
+        else
+        {
+            ticks++;
+            step = true;
+        }
+    if (getDirection() == left && getX() >= 1 && !getWorld()->checkDirt(getX(), getY()))
+    {
+        moveTo(getX() - 1, getY());
+        step = false;
+        return;
+    }
+        else
+        {
+            ticks++;
+            step = true;
+        }
+    }
+    
+    
+    
+    cout << "X: " << getX() << "Y: " << getY() << endl;
+    
+    
+    ticks++;
+
+    
+    
+    
 }
 
 //SQUIRT // GOTTA IMPLEMENT THE REST WHEN PROTESTER IS IMPLEMENTED
@@ -340,9 +470,6 @@ void Squirt::doSomething() //BOTTOM OF MAP ERROR FIX LATER
         world->annoyProtester(1);
         setHitpoints(0);
     }
-    
-    
-    
     
     //SQUIRT MOVEMENT
     switch(getDirection())
@@ -429,5 +556,38 @@ void SonarKit::doSomething()
     }
     
     ticks++;
+}
+void GoldNugget::doSomething()
+{
+    StudentWorld* world = getWorld();
+    DiggerMan* diggerman = world->getDiggerMan();
+    Protester* protester = world->getProtester();
+    
+    if (!isAlive())
+        return;
+    
+    if (!isVisible() && world->barrelVisible(this->getX(), this->getY()))
+    {
+        setVisible(true);
+    }
+    
+    if (this->isVisible() && world->checkDiggerman(this->getX(), this->getY(), this->getDirection()))
+    {
+        cout << "GOT GOLD NUGGET" << endl;
+        setHitpoints(0);
+        world->playSound(SOUND_GOT_GOODIE);
+        world->increaseScore(10);
+        diggerman->increaseGold();
+    }
+    
+    if (world->checkProtester(this->getX(), this->getY(), right))
+    {
+        cout << "PROTESTER GOT GOLD" << endl;
+        setHitpoints(0);
+        world->playSound(SOUND_PROTESTER_FOUND_GOLD);
+        world->increaseScore(25);
+        protester->setState(rest);
+    }
+    
     
 }

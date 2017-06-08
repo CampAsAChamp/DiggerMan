@@ -69,12 +69,24 @@ public:
     {
         setVisible(true);
         m_water = 50;
+        m_goldNuggets = 0;
         m_sonarCharges = 900;
     }
 
     virtual void doSomething();
     
-    
+    inline int getGold()
+    {
+        return m_goldNuggets;
+    }
+    inline void decreaseGold()
+    {
+        m_goldNuggets--;
+    }
+    inline void increaseGold()
+    {
+        m_goldNuggets++;
+    }
     inline int getWater()
     {
         return m_water;
@@ -159,7 +171,7 @@ class Barrel : public Actor
 {
 public:
     Barrel(StudentWorld * world, int startX, int startY)
-        : Actor(world, IMID_BARREL, 35, 50, right, 1.0, 2)
+        : Actor(world, IMID_BARREL, startX, startY, right, 1.0, 2)
     {
         setVisible(false); //Barrels should start hidden and only be discovered when walked over
     }
@@ -175,8 +187,9 @@ public:
         : Actor(world, IMID_GOLD, startX, startY, right, 1.0, 2)
     {
 		this->m_state = sleep;
-        setVisible(true);
+        setVisible(false);
     }
+    
 	void doSomething();
 	bool isStable();
 private:
@@ -216,11 +229,14 @@ class Protester : public Actor
 public:
     
     Protester(StudentWorld * world, int startX, int startY)
-    :Actor(world, IMID_PROTESTER, 20, 50, left, 1.0, 0)
+    :Actor(world, IMID_PROTESTER, 60, 60, left, 1.0, 0)
     {
         setVisible(true);
         setHitpoints(5);
         m_state = start;
+        tickToWaitBetweenMoves = 0;
+        ticks = 0;
+        step = false;
     }
     
     void doSomething();
@@ -232,9 +248,11 @@ public:
     
 private:
 
-    unsigned int tickToWaitBetweenMoves = std::max(0, (3 - (1 / 4)));
+    unsigned int tickToWaitBetweenMoves;
     unsigned int waitingTime = 0;
     unsigned int nonRestingTicks = 0;
+    unsigned int ticks;
+    bool step;
     
     ProtesterState m_state;
 };
