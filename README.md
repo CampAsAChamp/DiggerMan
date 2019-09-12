@@ -1,2 +1,2 @@
 # Digger-Man
-Project 2 for Professor Russell CS30 class
+Project done by Joseph Barbosa, Nick Schneider, and Jorge Landaverde
