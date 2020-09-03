@@ -1,2 +1,2 @@
 # Digger-Man
-Project done by Joseph Barbosa, Nick Schneider, and Jorge Landaverde
+Game created by Joseph Barbosa, Nick Schneider, and Jorge Landaverde
