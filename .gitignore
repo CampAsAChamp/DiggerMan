@@ -1,29 +1,47 @@
-DiggerMan/Assets/*
-DiggerMan/Debug/*
-DiggerMan/irrKlang/*
-DiggerMan/.DS_Store
-DiggerMan/DiggerMan.vcxproj
-DiggerMan/DiggerMan.vcxproj.filters
-DiggerMan/DiggerMan.vcxproj.user
-DiggerMan/freeglut.*
-DiggerMan/freeglut_ext.h
-DiggerMan/freeglut_std.h
-DiggerMan/GameConstants.h
-DiggerMan/GameController.*
-DiggerMan/GameWorld.*
-DiggerMan/GraphObject.h
-DiggerMan/irrKlang.lib
-DiggerMan/main.cpp
-DiggerMan/SoundFX.h
-DiggerMan/SpriteManager.h
-DerivedData/*
-Debug/*
-Diggerman.opensdf
-DiggerMan.sdf
-DiggerMan.sln
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# =========================
+# Operating System Files
+# =========================
+
+# OSX
+# =========================
+
 .DS_Store
-.vs/*
-DiggerMan.v12.suo
-DiggerMan.xcodeproj
+.AppleDouble
+.LSOverride
 
+# Thumbnails
+._*
 
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk

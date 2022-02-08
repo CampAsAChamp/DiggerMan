@@ -1,139 +1,91 @@
-#ifndef STUDENTWORLD_H_
+ #ifndef STUDENTWORLD_H_
 #define STUDENTWORLD_H_
+
 
 #include "GameWorld.h"
 #include "GameConstants.h"
+#include "GraphObject.h"
 #include "Actor.h"
 #include <string>
-#include <iostream>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>
 #include <vector>
-
+#include <algorithm>
+#include <iterator>
+#include <cmath>
 using namespace std;
-
-const int MAXSIZE_X = 64;
-const int MAXSIZE_Y = 64;
-
-const int MINESHAFT_START_LEFT = 29;
-const int MINESHAFT_STOP_RIGHT = 34;
-const int MINESHAFT_BOTTOM = 4;
-const int OBJECT_EXIST = 1;
-const int BOULDER_EXIST = 2;
-const int Y_OFFSET = 20;
-const int Y_BOUND_TOP = 8;
-const int X_BOUND_RIGHT = 4;
-const int MAX_BOULDER_Y = 38;
-
-// Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
-
-class DiggerMan; //FORWARD DECLARATION
 
 class StudentWorld : public GameWorld
 {
 public:
-    StudentWorld(std::string assetDir)
-        : GameWorld(assetDir)
-    {
-        ticks = 0;
-        m_level = 1;
-        m_lives = 3;
-        protesterIndex = 0;
-        m_oilCollected = 0;
-    }
+	StudentWorld(std::string assetDir)
+		: GameWorld(assetDir)
+	{
 
-    void setGameText();
-    virtual int init();
-    virtual int move();
-    virtual void cleanUp();
-
-    void removeDeadActors();
-
-    void deleteDirt(int xPassed, int yPassed);
-    //bool checkActorBelow(int xPassed, int yPassed, int IMID);
-    bool checkBoulderBelow(int xPassed, int yPassed);
-
-    bool checkDiggerman(int xPassed, int yPassed, Actor::Direction dir);
-    bool barrelVisible(int xPassed, int yPassed);
-    bool checkDiggermanBelow(int xPassed, int yPassed);
-    bool checkDirt(int xPassed, int yPassed);
-    bool checkDirtBelow(int xPassed, int yPassed);
-    bool checkProtester(int xPassed, int yPassed, Protester::Direction dir);
-    void checkItems(int xPassed, int yPassed);
-    bool protesterCheckDiggerman(int xPassed, int yPassed);
-    bool protesterFacingDiggerman(int xPassed, int yPassed, Protester::Direction dir);
-
-    void setDiggermanHP(int hitPoints);
-    inline void annoyDiggerman(int hitPoints)
-    {
-        int tempHP = m_diggerman->getHitpoints();
-        tempHP = tempHP - hitPoints;
-        m_diggerman->setHitpoints(tempHP);
-    }
-    inline void annoyProtester(int hitPoints)
-    {
-        int index = getIndex();
-
-        int tempHP = protester[index]->getHitpoints();
-        tempHP = tempHP - hitPoints;
-        protester[index]->setHitpoints(tempHP);
-        playSound(SOUND_PROTESTER_ANNOYED);
-
-        cout << "P LIFE" << protester[index]->getHitpoints() << endl;
-
-    }
-
-    bool ItemDoesNotExist(int itemX, int itemY);
-    void squirt(int xPassed, int yPassed, Actor::Direction dir);
-    bool distanceBtwObj(int itemX, int itemY);
-
-    inline DiggerMan* getDiggerMan()
-    {
-        return m_diggerman;
-    }
-    inline int getLevel()
-    {
-        return m_level;
-    }
-    inline int getTicks()
-    {
-        return ticks;
-    }
-    inline void setIndex(int index)
-    {
-        this->protesterIndex = index;
-    }
-    inline int getIndex()
-    {
-        return protesterIndex;
-    }
-    inline Protester* getProtester()
-    {
-        return protester[protesterIndex];
-    }
-
-    inline void decreaseOil()
-    {
-        m_oil--;
-    }
-    inline void increaseOilCollected()
-    {
-        m_oilCollected++;
-    }
-
-
+	}
+	virtual int init();
+	virtual int move();
+	virtual void cleanUp();
+	int getCurKey();
+	void fillDirt();
+	bool removeDirt(int x, int y);
+	void HUD();
+	int numOfBoulders();
+	int numOfGoldNuggets();
+	int numOfOilBarrels();
+	int numOfSonarAndWaterTicks(); //Sonar and Water have the same formula
+	int numOfProtesterTicksTillSpawn();
+	bool isThereDirtVisibleHere(int x, int y);
+	bool DMinVicinity(int range, int x, int y);
+	bool ProtesterinVicinity(int range, int x, int y, char type);
+	bool HCProtesterinVicinity(int range, int x, int y, char type);
+	int dmXlocation() { return dm->getX(); }
+	int dmYlocation() { return dm->getY(); }
+	void generateField(string type);
+	int randYGenerator(string type);
+	int randXGenerator(string type);
+	bool goodSpot(int randX, int randY);
+	bool farAway(int x, int y);
+	void dropNugget();
+	void decrementGoldBait();
+	void incrementGoldBait();
+	int numOfGoldBait();
+	void decrementSonarKit();
+	void incrementSonarKit();
+	int OilBarrelsRemaining();
+	void decOilBarrels();
+	int numOfSonarKits();
+	int getSquirtsRemaining();
+	void decrementSquirts();
+	void incrementSquirts();
+	void sonarBLAST();
+	bool isDirtAboveMe(int x, int y, int z);
+	bool isDirtLeftOfMe(int x, int y, int z);
+	bool isDirtRightOfMe(int x, int y, int z);
+	bool isDirtUnderMe(int x, int y, int z);
+	bool getDistDigManOnX(int x, int y, int& dis);
+	bool getDistDigManOnY(int x, int y, int& dis);
+	bool canShout(int x, int y);
+	bool isMoveableLocForProtester(int x, int y);
+	bool isABoulderHere(int x, int y, GraphObject::Direction d);
+	void addSquirtWeapon(GraphObject::Direction dir, int x, int y);
+	void killProtestorsHere(int x, int y); 
+	void killDm() { dm->decHealth(100); }
+	bool isThereContact(int x, int y, int x2, int y2);
+	bool dirtlessSpots(int x, int y);
+	bool generateQuickPathField(int**& bfsArray, int x, int y);
 private:
-    Actor * m_actor[MAXSIZE_X][MAXSIZE_Y];
-    Dirt * m_dirt[MAXSIZE_X][MAXSIZE_Y];
-    DiggerMan* m_diggerman;
-    vector<Protester*> protester;
-
-    int ticks;
-    int protesterIndex;
-    int m_level;
-    int m_lives;
-    int m_oil;
-    int m_oilCollected;
+	int SonarKits;
+	int GoldBait;
+	int SquirtsRemaining;
+	int OilBarrels;
+	int Protesters;
+	int ProtesterTicksPassed = 0;
+	int currentKey;
+	vector<Actor *> actors;
+	DiggerMan* dm;
+	Dirt* dirt[64][64];
+	Protester* p;
+	HardcoreProtester* hp;
 };
+
 
 #endif // STUDENTWORLD_H_
