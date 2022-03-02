@@ -51,7 +51,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+<div align="center">
+
 ![product-screenshot]
+
+</div>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
